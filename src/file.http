@@ -1,0 +1,6 @@
+POST http://localhost:8056/api/invoices/
+Content-Type: application/json
+
+{}
+
+###
