@@ -6,6 +6,7 @@ import com.ecommerce.facturation.Enum.TransactionalType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,4 +22,6 @@ public class Transaction extends  AbstractSupperClass{
     private PaymentStatus paymentStatus;
     @Enumerated(EnumType.STRING)
     private TransactionalType transactionalType;
+    @OneToOne
+    private Invoice invoice;
 }
