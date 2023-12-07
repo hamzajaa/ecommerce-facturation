@@ -3,8 +3,11 @@ package com.ecommerce.facturation.dto;
 import com.ecommerce.facturation.Enum.Bank;
 
 public record BankAccountDTO(
-        String rib,
+        String ribDTO,
         Bank bank,
-        UserDTO user
+        UserDTO userDto
 ) {
+    public BankAccountDTO{
+    }
+
 }
