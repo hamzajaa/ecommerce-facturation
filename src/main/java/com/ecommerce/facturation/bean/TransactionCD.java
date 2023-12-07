@@ -5,13 +5,17 @@ import com.ecommerce.facturation.Enum.TransactionalType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "TYPE",length = 4)
-@Data @NoArgsConstructor @AllArgsConstructor
-public abstract class TransactionCD extends AbstractSupperClass{
+@DiscriminatorColumn(name = "TYPE", length = 4)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public abstract class TransactionCD extends AbstractSupperClass {
     @ManyToOne
     private BankAccount sender;
     @ManyToOne
@@ -20,4 +24,6 @@ public abstract class TransactionCD extends AbstractSupperClass{
     private PaymentStatus paymentStatus;
     @Enumerated(EnumType.STRING)
     private TransactionalType transactionalType;
+    @OneToOne
+    private Invoice invoice;
 }

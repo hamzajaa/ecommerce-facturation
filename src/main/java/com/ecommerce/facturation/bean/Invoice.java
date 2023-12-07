@@ -2,9 +2,7 @@ package com.ecommerce.facturation.bean;
 
 import com.ecommerce.facturation.Enum.InvoiceStatus;
 import jakarta.persistence.*;
-import lombok.Cleanup;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,8 +12,9 @@ import java.util.UUID;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Invoice extends AbstractSupperClass {
-
 
     private String orderReference;
 
@@ -38,6 +37,9 @@ public class Invoice extends AbstractSupperClass {
 
     @Column(length = 100_000)
     private String products;
+
+    @OneToOne
+    private TransactionCD transactionCD;
 
 
 }
