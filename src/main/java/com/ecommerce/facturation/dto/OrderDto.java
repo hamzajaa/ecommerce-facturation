@@ -27,10 +27,10 @@ public record OrderDto(
         LocalDateTime dateCommand,
 
         @NotNull(message = "Client cannot be null")
-        ClientDTO client,
+        String client,
 
         @NotNull(message = "Order Items Cannot be null")
-        @JsonProperty("commandeItemDtos")
-        List<CommandItemDto> commandItemDtos
+        @JsonProperty("commandItems")
+        String commandItemDtos
 ) {
 }

@@ -3,6 +3,8 @@ package com.ecommerce.facturation.service.impl;
 import com.ecommerce.facturation.Enum.InvoiceStatus;
 import com.ecommerce.facturation.bean.Invoice;
 import com.ecommerce.facturation.dao.InvoiceDao;
+import com.ecommerce.facturation.dto.ClientDTO;
+import com.ecommerce.facturation.dto.CommandItemDto;
 import com.ecommerce.facturation.dto.InvoiceDTO;
 import com.ecommerce.facturation.dto.OrderDto;
 import com.ecommerce.facturation.exception.InvoiceNotFoundException;
@@ -52,20 +54,22 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     public InvoiceDTO save(String payload) {
         OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
+        ClientDTO clientDTO = jsonMapper.convertJsonToObject(orderDto.client(), ClientDTO.class);
+        List<CommandItemDto> commandItemDtos = jsonMapper.convertJsonToObjects(orderDto.commandItemDtos(), CommandItemDto.class);
         InvoiceDTO invoiceDTO = new InvoiceDTO(
                 orderDto.reference(),
                 LocalDateTime.now().plusDays(30),
-                InvoiceStatus.Pending,
+                InvoiceStatus.Paid,
                 orderDto.totalPay(),
-                orderDto.client(),
-                orderDto.commandItemDtos()
+                clientDTO,
+                commandItemDtos
         );
         return save(invoiceDTO);
     }
 
     @Override
     public InvoiceDTO update(InvoiceDTO invoiceDTO) {
-//        findById(invoiceDTO.invoiceId());
+        findById(invoiceDTO.invoiceId());
         Invoice invoice = invoiceMapper.fromInvoiceDto(invoiceDTO);
         Invoice updatedInvoice = invoiceDao.save(invoice);
         return invoiceMapper.fromInvoice(updatedInvoice);

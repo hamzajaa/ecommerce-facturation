@@ -20,6 +20,6 @@ public record CommandItemDto(
         BigDecimal amount,
         @NotNull(message = "Product cannot be null")
         @JsonProperty("produit")
-        ProductDto product
+        String product
 ) {
 }
