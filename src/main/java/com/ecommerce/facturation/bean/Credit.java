@@ -19,5 +19,5 @@ import java.util.Set;
 @AllArgsConstructor
 public class Credit extends TransactionCD {
     @OneToMany(mappedBy = "credit")
-    private Set<CreditBillingToPay> BillingsToReceive;
+    private Set<CreditBillingToPay> BillingsToPay;
 }
