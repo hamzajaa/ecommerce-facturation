@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class TransactionCD extends AbstractSupperClass {
+   private BigDecimal amount;
     @ManyToOne
     private BankAccount sender;
     @ManyToOne
