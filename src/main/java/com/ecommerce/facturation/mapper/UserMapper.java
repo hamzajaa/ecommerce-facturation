@@ -2,7 +2,9 @@ package com.ecommerce.facturation.mapper;
 
 import com.ecommerce.facturation.bean.User;
 import com.ecommerce.facturation.dto.UserDTO;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
 
 
@@ -13,7 +15,7 @@ public class UserMapper {
         }
         else{
             User user = new User();
-
+            user.setId(userDTO.getId());
             user.setFullName(userDTO.getFullName());
             user.setEmail(userDTO.getEmail());
             user.setAddress(userDTO.getAddress());
@@ -33,6 +35,7 @@ public class UserMapper {
         }
         else {
             UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
             userDTO.setFullName(user.getFullName());
             userDTO.setEmail(user.getEmail());
             userDTO.setAddress(user.getAddress());

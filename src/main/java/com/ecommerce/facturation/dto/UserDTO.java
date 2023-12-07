@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class UserDTO {
+    Long id;
     String fullName;
     String email;
     String address;
