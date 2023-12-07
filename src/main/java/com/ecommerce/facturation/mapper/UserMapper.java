@@ -1,12 +1,21 @@
 package com.ecommerce.facturation.mapper;
 
+import com.ecommerce.facturation.bean.BankAccount;
 import com.ecommerce.facturation.bean.User;
+import com.ecommerce.facturation.dto.BillingToReceiveDTO;
 import com.ecommerce.facturation.dto.UserDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
 
+    /*@Autowired
+    private BankAccountMapper bankAccountMapper;
+    @Autowired
+    private BillingToPayMapper bBillingToPayMapper;
+    @Autowired
+    private BillingToReceiveMapper billingToReceiveMapper;*/
 
 
     public User fromUserDto(UserDTO userDTO){
