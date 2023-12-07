@@ -1,5 +1,6 @@
 package com.ecommerce.facturation;
 
+import com.ecommerce.facturation.bean.Credit;
 import com.ecommerce.facturation.dto.OrderDto;
 import com.ecommerce.facturation.jms.MessageConsumer;
 import com.ecommerce.facturation.ws.InvoiceController;

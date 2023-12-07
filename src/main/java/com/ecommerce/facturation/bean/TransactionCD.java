@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class TransactionCD extends AbstractSupperClass {
-   private BigDecimal amount;
+    private BigDecimal amount;
     @ManyToOne
     private BankAccount sender;
     @ManyToOne

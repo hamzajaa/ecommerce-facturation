@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends AbstractSupperClass {
-    private String fullname;
+    private String fullName;
     @OneToMany(mappedBy = "user")
     private List<BankAccount> bankAccounts;
     @OneToMany(mappedBy = "user")
