@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 
 public record BankAccountBalanceDTO(
         BankAccountDTO bankAccountDTO,
-        BigDecimal balance
+        BigDecimal balanceDTO
 ) {
 }
