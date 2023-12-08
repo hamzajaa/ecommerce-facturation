@@ -1,5 +1,6 @@
 package com.ecommerce.facturation.mapper;
 
+import com.ecommerce.facturation.Enum.Role;
 import com.ecommerce.facturation.bean.BankAccount;
 import com.ecommerce.facturation.dto.BankAccountDTO;
 import com.ecommerce.facturation.dto.UserDTO;
@@ -21,7 +22,7 @@ public class BankAccountMapper {
         BankAccountDTO bankAccountDTO = new BankAccountDTO(
                 bankAccount.getRib(),
                 bankAccount.getBank(),
-                new UserDTO()
+                new UserDTO("", "", "", "", Role.CLIENT, null, null, null)
         );
         return bankAccountDTO;
     }
