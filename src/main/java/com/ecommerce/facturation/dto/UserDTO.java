@@ -16,34 +16,35 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-public class UserDTO {
+
+
+public record UserDTO(
     @NotNull(message = "ID cannot be null")
-    Long id;
+    Long id,
 
     @NotBlank(message = "Full name cannot be blank")
-    String fullName;
+    String fullName,
 
     @Email(message = "Email should be valid")
-    String email;
+    String email,
 
     @NotBlank(message = "Address cannot be blank")
-    String address;
+    String address,
 
     @Pattern(regexp = "\\d{10}", message = "Phone number should be 10 digits")
-    String phoneNumber;
+    String phoneNumber,
 
     @NotNull(message = "Role cannot be null")
-    Role role;
+    Role role,
 
     @Valid
-    List<BankAccountDTO> bankAccountDTOS;
+    List<BankAccountDTO> bankAccountDTOS,
 
     @Valid
-    List<BillingToPayDTO> billingToPayDTOS;
+    List<BillingToPayDTO> billingToPayDTOS,
 
     @Valid
-    List<BillingToReceiveDTO> billingToReceiveDTOS;
+    List<BillingToReceiveDTO> billingToReceiveDTOS
+){
+
 }

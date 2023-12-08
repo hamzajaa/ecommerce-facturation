@@ -8,55 +8,62 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper {
+public class UserMapper extends AbstractMapper<User,UserDTO>{
 
     @Autowired
     private BankAccountMapper bankAccountMapper;
-    /*@Autowired
-    private BillingToPayMapper bBillingToPayMapper;
     @Autowired
-    private BillingToReceiveMapper billingToReceiveMapper;*/
+    private BillingToPayMapper billingToPayMapper;
+    @Autowired
+    private BillingToReceiveMapper billingToReceiveMapper;
 
-
-    public User fromUserDto(UserDTO userDTO){
+    @Override
+    User toEntity(UserDTO userDTO) {
         if(userDTO==null){
             return null;
         }
         else{
             User user = new User();
-            user.setId(userDTO.getId());
-            user.setFullName(userDTO.getFullName());
-            user.setEmail(userDTO.getEmail());
-            user.setAddress(userDTO.getAddress());
-            user.setPhoneNumber(userDTO.getPhoneNumber());
-            user.setRole(userDTO.getRole());
+            user.setId(userDTO.id());
+            user.setFullName(userDTO.fullName());
+            user.setEmail(userDTO.email());
+            user.setAddress(userDTO.address());
+            user.setPhoneNumber(userDTO.phoneNumber());
+            user.setRole(userDTO.role());
             //user.setBankAccounts(bankAccountMapper.fromBankAccountDTO(userDTO.bankAccountDTOS()));
-            //user.setBillingsToPay(userDTO.billingToPayDTOS());
-            //user.setBillingsToReceive(userDTO.billingToReceiveDTOS());
+            user.setBillingsToPay(billingToPayMapper.toEntity(userDTO.billingToPayDTOS()));
+            user.setBillingsToReceive(billingToReceiveMapper.toEntity(userDTO.billingToReceiveDTOS()));
             return user;
         }
-
-
     }
-    public UserDTO fromUser(User user){
+
+    @Override
+    UserDTO toDto(User user) {
         if(user==null){
             return null;
         }
         else {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(user.getId());
-            userDTO.setFullName(user.getFullName());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setAddress(user.getAddress());
-            userDTO.setPhoneNumber(user.getPhoneNumber());
-            userDTO.setRole(user.getRole());
-            //userDTO.setBankAccountDTOS(user.getBankAccounts());
-            //userDTO.setBillingToPayDTOS(user.getBillingsToPay());
-            //userDTO.setBillingToReceiveDTOS(user.getBillingsToReceive());
+            UserDTO userDTO = new UserDTO(
+                    user.getId(),
+                    user.getFullName(),
+                    user.getEmail(),
+                    user.getAddress(),
+                    user.getPhoneNumber(),
+                    user.getRole(),
+                    //bankAccountMapper.fromBankAccount(user.getBankAccounts()),
+                   // billingToPayMapper.toDto(user.getBillingsToPay()),
+                    //billingToReceiveMapper.toDto(user.getBillingsToReceive())
+            );
             return userDTO;
+
 
         }
     }
+
+
+
+
+
 
 
 }
