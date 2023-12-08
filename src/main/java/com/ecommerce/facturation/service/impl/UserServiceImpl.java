@@ -23,29 +23,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> getUsers() {
         return userDao.findAll().stream().map(
-                user -> userMapper.fromUser(user)).collect(Collectors.toList());
+                user -> userMapper.toDto(user)).collect(Collectors.toList());
     }
 
     @Override
     public UserDTO findById(Long id) {
         User user = userDao.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
-        return userMapper.fromUser(user);
+        return userMapper.toDto(user);
     }
 
     @Override
     public UserDTO save(UserDTO userDTO) {
-        User user = userMapper.fromUserDto(userDTO);
+        User user = userMapper.toEntity(userDTO);
         User savedUser = userDao.save(user);
-        return userMapper.fromUser(savedUser);
+        return userMapper.toDto(savedUser);
     }
 
     @Override
     public UserDTO update(UserDTO userDTO) {
-        findById(userDTO.getId());
-        User user = userMapper.fromUserDto(userDTO);
+        findById(userDTO.id());
+        User user = userMapper.toEntity(userDTO);
         User updatedUser = userDao.save(user);
-        return userMapper.fromUser(updatedUser);
+        return userMapper.toDto(updatedUser);
 
 
     }

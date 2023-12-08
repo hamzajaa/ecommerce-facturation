@@ -18,7 +18,7 @@ public class UserMapper extends AbstractMapper<User,UserDTO>{
     private BillingToReceiveMapper billingToReceiveMapper;
 
     @Override
-    User toEntity(UserDTO userDTO) {
+    public User toEntity(UserDTO userDTO) {
         if(userDTO==null){
             return null;
         }
@@ -30,7 +30,7 @@ public class UserMapper extends AbstractMapper<User,UserDTO>{
             user.setAddress(userDTO.address());
             user.setPhoneNumber(userDTO.phoneNumber());
             user.setRole(userDTO.role());
-            //user.setBankAccounts(bankAccountMapper.fromBankAccountDTO(userDTO.bankAccountDTOS()));
+            user.setBankAccounts(bankAccountMapper.toEntity(userDTO.bankAccountDTOS()));
             user.setBillingsToPay(billingToPayMapper.toEntity(userDTO.billingToPayDTOS()));
             user.setBillingsToReceive(billingToReceiveMapper.toEntity(userDTO.billingToReceiveDTOS()));
             return user;
@@ -38,7 +38,7 @@ public class UserMapper extends AbstractMapper<User,UserDTO>{
     }
 
     @Override
-    UserDTO toDto(User user) {
+    public UserDTO toDto(User user) {
         if(user==null){
             return null;
         }
@@ -50,9 +50,9 @@ public class UserMapper extends AbstractMapper<User,UserDTO>{
                     user.getAddress(),
                     user.getPhoneNumber(),
                     user.getRole(),
-                    //bankAccountMapper.fromBankAccount(user.getBankAccounts()),
-                   // billingToPayMapper.toDto(user.getBillingsToPay()),
-                    //billingToReceiveMapper.toDto(user.getBillingsToReceive())
+                    bankAccountMapper.toDto(user.getBankAccounts()),
+                   billingToPayMapper.toDto(user.getBillingsToPay()),
+                    billingToReceiveMapper.toDto(user.getBillingsToReceive())
             );
             return userDTO;
 
