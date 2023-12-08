@@ -2,6 +2,7 @@ package com.ecommerce.facturation.mapper;
 
 import com.ecommerce.facturation.bean.BankAccount;
 import com.ecommerce.facturation.dto.BankAccountDTO;
+import com.ecommerce.facturation.dto.UserDTO;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +21,7 @@ public class BankAccountMapper {
         BankAccountDTO bankAccountDTO = new BankAccountDTO(
                 bankAccount.getRib(),
                 bankAccount.getBank(),
-                //bankAccount.getUser()
+                new UserDTO()
         );
         return bankAccountDTO;
     }
