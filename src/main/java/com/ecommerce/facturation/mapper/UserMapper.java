@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    /*@Autowired
-    private BankAccountMapper bankAccountMapper;
     @Autowired
+    private BankAccountMapper bankAccountMapper;
+    /*@Autowired
     private BillingToPayMapper bBillingToPayMapper;
     @Autowired
     private BillingToReceiveMapper billingToReceiveMapper;*/
@@ -30,7 +30,7 @@ public class UserMapper {
             user.setAddress(userDTO.getAddress());
             user.setPhoneNumber(userDTO.getPhoneNumber());
             user.setRole(userDTO.getRole());
-            //user.setBankAccounts(userDTO.bankAccountDTOS());
+            //user.setBankAccounts(bankAccountMapper.fromBankAccountDTO(userDTO.bankAccountDTOS()));
             //user.setBillingsToPay(userDTO.billingToPayDTOS());
             //user.setBillingsToReceive(userDTO.billingToReceiveDTOS());
             return user;
