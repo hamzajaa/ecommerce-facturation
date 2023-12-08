@@ -55,7 +55,7 @@ public class EcommerceFacturationApplication implements CommandLineRunner {
             }
         };
 
-        messageConsumer.receiveMessage(message);
+//        messageConsumer.receiveMessage(message);
         System.out.println(" ");
     }
 
