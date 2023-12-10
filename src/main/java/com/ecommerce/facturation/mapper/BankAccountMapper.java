@@ -1,28 +1,31 @@
 package com.ecommerce.facturation.mapper;
 
-import com.ecommerce.facturation.Enum.Role;
 import com.ecommerce.facturation.bean.BankAccount;
 import com.ecommerce.facturation.dto.BankAccountDTO;
-import com.ecommerce.facturation.dto.UserDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BankAccountMapper {
+public class BankAccountMapper extends AbstractMapper<BankAccount,BankAccountDTO>{
 
-    public BankAccount fromBankAccountDTO(BankAccountDTO bankAccountDTO) {
+   @Autowired
+   private UserMapper userMapper;
+
+    @Override
+    public BankAccount toEntity(BankAccountDTO dto) {
         BankAccount bankAccount = new BankAccount();
-        bankAccount.setRib(bankAccountDTO.ribDTO());
-        bankAccount.setBank(bankAccountDTO.bank());
-        // bankAccount.setUser(UserMapper.fromUserDTO(bankAccountDTO.UserDto()));
+        bankAccount.setRib(dto.ribDTO());
+        bankAccount.setBank(dto.bank());
+        bankAccount.setUser(userMapper.toEntity(dto.userDto()));
         return bankAccount;
     }
 
-
-    public BankAccountDTO fromBankAccount(BankAccount bankAccount) {
+    @Override
+    public BankAccountDTO toDto(BankAccount entity) {
         BankAccountDTO bankAccountDTO = new BankAccountDTO(
-                bankAccount.getRib(),
-                bankAccount.getBank(),
-                new UserDTO("", "", "", "", Role.CLIENT, null, null, null)
+                entity.getRib(),
+                entity.getBank(),
+                userMapper.toDto(entity.getUser())
         );
         return bankAccountDTO;
     }

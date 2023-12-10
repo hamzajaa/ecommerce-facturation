@@ -23,27 +23,27 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public List<BankAccountDTO> getBankAccounts() {
         return bankAccountDao.findAll().stream()
-                .map(bankAccount -> bankAccountMapper.fromBankAccount(bankAccount)).collect(Collectors.toList());
+                .map(bankAccount -> bankAccountMapper.toDto(bankAccount)).collect(Collectors.toList());
     }
 
     @Override
     public BankAccountDTO findById(Long id) throws BankAccountNotFoundException {
         BankAccount bankAccount = bankAccountDao.findById(id).orElseThrow(() -> new BankAccountNotFoundException("Bank account not found with id: " + id));
-        return bankAccountMapper.fromBankAccount(bankAccount);
+        return bankAccountMapper.toDto(bankAccount);
     }
 
     @Override
     public BankAccountDTO save(BankAccountDTO bankAccountDTO) {
-        BankAccount bankAccount=bankAccountMapper.fromBankAccountDTO(bankAccountDTO);
+        BankAccount bankAccount=bankAccountMapper.toEntity(bankAccountDTO);
         BankAccount newBankAccount=bankAccountDao.save(bankAccount);
-        return bankAccountMapper.fromBankAccount(newBankAccount);
+        return bankAccountMapper.toDto(newBankAccount);
     }
 
     @Override
     public BankAccountDTO update(BankAccountDTO bankAccountDTO) {
-        BankAccount bankAccount=bankAccountMapper.fromBankAccountDTO(bankAccountDTO);
+        BankAccount bankAccount=bankAccountMapper.toEntity(bankAccountDTO);
         BankAccount newBankAccount=bankAccountDao.save(bankAccount);
-        return bankAccountMapper.fromBankAccount(newBankAccount);
+        return bankAccountMapper.toDto(newBankAccount);
     }
 
     @Override

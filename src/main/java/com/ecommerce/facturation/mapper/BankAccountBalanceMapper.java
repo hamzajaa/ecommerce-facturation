@@ -9,15 +9,17 @@ import org.springframework.stereotype.Component;
 public class BankAccountBalanceMapper {
     @Autowired
     private BankAccountMapper bankAccountMapper;
+
+
     public BankAccountBalance fromBankAccountBalanceDTO(BankAccountBalanceDTO bankAccountBalanceDTO) {
         BankAccountBalance bankAccountBalance = new BankAccountBalance();
         bankAccountBalance.setBalance(bankAccountBalanceDTO.balanceDTO());
-        bankAccountBalance.setBankAccount(bankAccountMapper.fromBankAccountDTO(bankAccountBalanceDTO.bankAccountDTO()));
+        bankAccountBalance.setBankAccount(bankAccountMapper.toEntity(bankAccountBalanceDTO.bankAccountDTO()));
         return bankAccountBalance;
     }
     public BankAccountBalanceDTO fromBankAccountBalance(BankAccountBalance bankAccountBalance) {
         BankAccountBalanceDTO bankAccountBalanceDTO = new BankAccountBalanceDTO(
-                bankAccountMapper.fromBankAccount(bankAccountBalance.getBankAccount()),
+                bankAccountMapper.toDto(bankAccountBalance.getBankAccount()),
                 bankAccountBalance.getBalance()
         );
         return bankAccountBalanceDTO;
