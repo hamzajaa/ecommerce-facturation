@@ -49,11 +49,11 @@ public class InvoiceControllerTest {
 
         InvoiceDTO invoiceDTO = new InvoiceDTO("hdd", LocalDateTime.now(),
                 InvoiceStatus.Pending, BigDecimal.ZERO,
-                new ClientDTO("hamza", "hamza@gmail.com", "marrakech",
-                        "+212662356987"),
+                "hamza", "hamza@gmail.com", "marrakech",
+                "+212662356987",
                 List.of(new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN)))));
 
-        InvoiceDTO savedInvoiceDTO = new InvoiceDTO(1L, invoiceDTO.orderReference(), invoiceDTO.dueDate(), invoiceDTO.invoiceStatus(), invoiceDTO.totalPay(), invoiceDTO.clientDTO(), invoiceDTO.commandeItemDtos());
+        InvoiceDTO savedInvoiceDTO = new InvoiceDTO(1L, invoiceDTO.orderReference(), invoiceDTO.dueDate(), invoiceDTO.invoiceStatus(), invoiceDTO.totalPay(), invoiceDTO.clientName(), invoiceDTO.clientAddress(), invoiceDTO.clientNumberPhone(), invoiceDTO.clientEmail(), invoiceDTO.commandeItemDtos());
 
         when(invoiceService.save(invoiceDTO)).thenReturn(savedInvoiceDTO);
 
@@ -68,8 +68,10 @@ public class InvoiceControllerTest {
     @Test
     @DisplayName("Test Success Scenario for Fetching All Invoices")
     public void testFindAllInvoices() {
-        InvoiceDTO invoiceDTO1 = new InvoiceDTO(1L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending, BigDecimal.ZERO, new ClientDTO("hamza", "hamza@gmail.com", "marrakech", "+212662356987"), List.of(new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN)))));
-        InvoiceDTO invoiceDTO2 = new InvoiceDTO(2L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending, BigDecimal.ZERO, new ClientDTO("hamza", "hamza@gmail.com", "marrakech", "+212662356987"), List.of(new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN,jsonMapper.convertObjectToJson( new ProductDto(2L, "Product2", BigDecimal.TEN)))));
+        InvoiceDTO invoiceDTO1 = new InvoiceDTO(1L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending,
+                BigDecimal.ZERO, "hamza", "hamza@gmail.com", "marrakech", "+212662356987", List.of(new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN)))));
+        InvoiceDTO invoiceDTO2 = new InvoiceDTO(2L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending,
+                BigDecimal.ZERO, "hamza", "hamza@gmail.com", "marrakech", "+212662356987", List.of(new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN)))));
 
         List<InvoiceDTO> invoiceDTOList = List.of(invoiceDTO1, invoiceDTO2);
 
@@ -85,7 +87,7 @@ public class InvoiceControllerTest {
     @Test
     @DisplayName("Test Success Scenario for updating invoice")
     public void testUpdateInvoice() {
-        InvoiceDTO invoiceDTO = new InvoiceDTO(1L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending, BigDecimal.ZERO, new ClientDTO("hamza", "hamza@gmail.com", "marrakech", "+212662356987"), List.of(new CommandItemDto(1L, 5, BigDecimal.ONE,jsonMapper.convertObjectToJson( new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN)))));
+        InvoiceDTO invoiceDTO = new InvoiceDTO(1L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending, BigDecimal.ZERO, "hamza", "hamza@gmail.com", "marrakech", "+212662356987", List.of(new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN)))));
 
         when(invoiceService.update(any())).thenReturn(invoiceDTO);
 
@@ -99,7 +101,7 @@ public class InvoiceControllerTest {
     @Test
     @DisplayName("Test Success Scenario for find invoice by id")
     public void testFindById() {
-        InvoiceDTO invoiceDTO = new InvoiceDTO(1L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending, BigDecimal.ZERO, new ClientDTO("hamza", "hamza@gmail.com", "marrakech", "+212662356987"), List.of(new CommandItemDto(1L, 5, BigDecimal.ONE,jsonMapper.convertObjectToJson( new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN,jsonMapper.convertObjectToJson( new ProductDto(2L, "Product2", BigDecimal.TEN)))));
+        InvoiceDTO invoiceDTO = new InvoiceDTO(1L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending, BigDecimal.ZERO, "hamza", "hamza@gmail.com", "marrakech", "+212662356987", List.of(new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN)))));
 
         when(invoiceService.findById(invoiceDTO.invoiceId())).thenReturn(invoiceDTO);
 
@@ -114,7 +116,7 @@ public class InvoiceControllerTest {
     @DisplayName("Test Success Scenario for delete invoice by id")
     public void testDeleteById() {
 
-        InvoiceDTO invoiceDTO = new InvoiceDTO(1L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending, BigDecimal.ZERO, new ClientDTO("hamza", "hamza@gmail.com", "marrakech", "+212662356987"), List.of(new CommandItemDto(1L, 5, BigDecimal.ONE,jsonMapper.convertObjectToJson( new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN,jsonMapper.convertObjectToJson( new ProductDto(2L, "Product2", BigDecimal.TEN)))));
+        InvoiceDTO invoiceDTO = new InvoiceDTO(1L, "hdd", LocalDateTime.now(), InvoiceStatus.Pending, BigDecimal.ZERO, "hamza", "hamza@gmail.com", "marrakech", "+212662356987", List.of(new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))), new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN)))));
 
         when(invoiceService.deleteInvoiceById(invoiceDTO.invoiceId())).thenReturn(true);
 

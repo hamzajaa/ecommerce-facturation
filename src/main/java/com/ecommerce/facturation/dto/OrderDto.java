@@ -32,5 +32,6 @@ public record OrderDto(
         @NotNull(message = "Order Items Cannot be null")
         @JsonProperty("commandeItemDtos")
         String commandItemDtos
+
 ) {
 }

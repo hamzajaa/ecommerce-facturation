@@ -9,6 +9,7 @@ import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import javax.jms.ConnectionFactory;
+import javax.jms.Session;
 
 @Configuration
 @EnableJms
@@ -35,7 +36,7 @@ public class JmsConfig {
     public JmsListenerContainerFactory<?> jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
-        factory.setClientId("emagasin");
+        factory.setClientId("facturation_id");
         return factory;
     }
 }

@@ -13,6 +13,7 @@ import com.ecommerce.facturation.service.facade.InvoiceService;
 import com.ecommerce.facturation.utils.invoicePdf.GenerateInvoicePdf;
 import com.ecommerce.facturation.utils.invoicePdf.SendEmailToClient;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
+    @Transactional
     public InvoiceDTO save(InvoiceDTO invoiceDTO) {
         Invoice invoice = invoiceMapper.fromInvoiceDto(invoiceDTO);
         Invoice savedInvoice = invoiceDao.save(invoice);
@@ -62,8 +64,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceMapper.fromInvoice(savedInvoice);
     }
 
-
-    public InvoiceDTO save(String payload) {
+    public void setDataToInvoice(String payload) {
         OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
         ClientDTO clientDTO = jsonMapper.convertJsonToObject(orderDto.client(), ClientDTO.class);
         List<CommandItemDto> commandItemDtos = jsonMapper.convertJsonToObjects(orderDto.commandItemDtos(), CommandItemDto.class);
@@ -72,10 +73,13 @@ public class InvoiceServiceImpl implements InvoiceService {
                 LocalDateTime.now().plusDays(30),
                 InvoiceStatus.Paid,
                 orderDto.totalPay(),
-                clientDTO,
+                clientDTO.fullName(),
+                clientDTO.address(),
+                clientDTO.phoneNumber(),
+                clientDTO.email(),
                 commandItemDtos
         );
-        return save(invoiceDTO);
+        save(invoiceDTO);
     }
 
 

@@ -54,6 +54,7 @@ public class EcommerceFacturationApplication implements CommandLineRunner {
                 "{\\\"id\\\":2,\\\"quantity\\\":3,\\\"prix\\\":29.99,\\\"produit\\\":\\\"{\\\\\\\"id\\\\\\\":2,\\\\\\\"reference\\\\\\\":\\\\\\\"REF456\\\\\\\",\\\\\\\"prixProduit\\\\\\\":\\\\\\\"20.55\\\\\\\",\\\\\\\"libelle\\\\\\\":\\\\\\\"ProductB\\\\\\\",\\\\\\\"categorieProduitDto\\\\\\\":{\\\\\\\"id\\\\\\\":102,\\\\\\\"libele\\\\\\\":\\\\\\\"CategoryB\\\\\\\"}}\\\"}," +
                 "{\\\"id\\\":3,\\\"quantity\\\":1,\\\"prix\\\":9.99,\\\"produit\\\":\\\"{\\\\\\\"id\\\\\\\":3,\\\\\\\"reference\\\\\\\":\\\\\\\"REF789\\\\\\\",\\\\\\\"prixProduit\\\\\\\":\\\\\\\"5.99\\\\\\\",\\\\\\\"libelle\\\\\\\":\\\\\\\"ProductC\\\\\\\",\\\\\\\"categorieProduitDto\\\\\\\":{\\\\\\\"id\\\\\\\":103,\\\\\\\"libele\\\\\\\":\\\\\\\"CategoryC\\\\\\\"}}\\\"}]\"\n" +
                 "}";
+
         Message<String> message = new Message<>() {
             @Override
             public String getPayload() {

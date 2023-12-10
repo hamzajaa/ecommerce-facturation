@@ -32,10 +32,10 @@ public class InvoiceMapper {
         invoice.setDueDate(invoiceDTO.dueDate());
         invoice.setInvoiceStatus(invoiceDTO.invoiceStatus());
         invoice.setTotalPay(invoiceDTO.totalPay());
-        invoice.setClientName(invoiceDTO.clientDTO().fullName());
-        invoice.setClientAddress(invoiceDTO.clientDTO().address());
-        invoice.setClientNumberPhone(invoiceDTO.clientDTO().phoneNumber());
-        invoice.setClientEmail(invoiceDTO.clientDTO().email());
+        invoice.setClientName(invoiceDTO.clientName());
+        invoice.setClientAddress(invoiceDTO.clientAddress());
+        invoice.setClientNumberPhone(invoiceDTO.clientNumberPhone());
+        invoice.setClientEmail(invoiceDTO.clientEmail());
         String products = jsonMapper.convertObjectToJson(invoiceDTO.commandeItemDtos());
         invoice.setProducts(products);
 
@@ -51,7 +51,10 @@ public class InvoiceMapper {
                 invoice.getDueDate(),
                 invoice.getInvoiceStatus(),
                 invoice.getTotalPay(),
-                new ClientDTO(invoice.getClientName(), invoice.getClientEmail(), invoice.getClientAddress(), invoice.getClientNumberPhone()),
+                invoice.getClientName(),
+                invoice.getClientEmail(),
+                invoice.getClientAddress(),
+                invoice.getClientNumberPhone(),
                 products
         );
 

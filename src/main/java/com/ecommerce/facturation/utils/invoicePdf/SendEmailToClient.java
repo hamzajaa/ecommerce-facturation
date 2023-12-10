@@ -24,20 +24,20 @@ public class SendEmailToClient {
     private String fromEmail;
 
 
-
     public void send(Invoice invoice) {
         try {
 //            Thread.sleep(10000);
             MimeMessage message = getMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setPriority(1);
-            helper.setSubject("Invoice Order");
+            helper.setSubject("Invoice for Your Recent Order - Order #" + invoice.getOrderReference());
             helper.setFrom(fromEmail);
             helper.setTo(invoice.getClientEmail());
-            helper.setText("Text");
+            helper.setText("Please find attached the invoice for your recent order. The invoice contains all the necessary details, including the order number, date, due date, and total amount.\n");
             // Add attachments
             FileSystemResource pdf = new FileSystemResource(new File("src/main/resources/invoices/" + invoice.getInvoiceNumber() + ".pdf"));
-            helper.addInline(getContentId(pdf.getFilename()), pdf);
+//            helper.addInline(getContentId(pdf.getFilename()), pdf);
+            helper.addAttachment("Invoice.pdf", pdf);
 
             emailSender.send(message);
 
