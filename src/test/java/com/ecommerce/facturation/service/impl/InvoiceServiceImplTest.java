@@ -45,7 +45,7 @@ public class InvoiceServiceImplTest {
     private JsonMapper jsonMapper = new JsonMapper();
     private InvoiceMapper invoiceMapper = new InvoiceMapper();
 
-    @Test 
+    @Test
     public void testFindInvoiceById() {
         Invoice invoice = new Invoice();
         invoice.setId(1L);
@@ -78,14 +78,14 @@ public class InvoiceServiceImplTest {
         invoiceMapper.setJsonMapper(jsonMapper);
         invoiceService.setInvoiceMapper(invoiceMapper);
 
-        invoiceService.save(new InvoiceDTO(1L,"hdd",
+        invoiceService.save(new InvoiceDTO(1L, "hdd",
                 LocalDateTime.now(),
                 InvoiceStatus.Pending,
                 BigDecimal.ZERO,
                 new ClientDTO("hamza", "hamza@gmail.com", "marrakech", "+212662356987"),
                 List.of(
-                        new CommandItemDto(1L, 5, BigDecimal.ONE, new ProductDto(1L, "Product1", BigDecimal.TEN)),
-                        new CommandItemDto(2L, 6, BigDecimal.TEN, new ProductDto(2L, "Product2", BigDecimal.TEN)))
+                        new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))),
+                        new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN))))
         ));
 
         verify(invoiceDao).save(any());
@@ -99,8 +99,8 @@ public class InvoiceServiceImplTest {
                 BigDecimal.ZERO,
                 new ClientDTO("hamza", "hamza@gmail.com", "marrakech", "+212662356987"),
                 List.of(
-                        new CommandItemDto(1L, 5, BigDecimal.ONE, new ProductDto(1L, "Product1", BigDecimal.TEN)),
-                        new CommandItemDto(2L, 6, BigDecimal.TEN, new ProductDto(2L, "Product2", BigDecimal.TEN)))
+                        new CommandItemDto(1L, 5, BigDecimal.ONE, jsonMapper.convertObjectToJson(new ProductDto(1L, "Product1", BigDecimal.TEN))),
+                        new CommandItemDto(2L, 6, BigDecimal.TEN, jsonMapper.convertObjectToJson(new ProductDto(2L, "Product2", BigDecimal.TEN))))
         );
 //        Invoice invoice = new Invoice();
 //        invoice.setId(1L);

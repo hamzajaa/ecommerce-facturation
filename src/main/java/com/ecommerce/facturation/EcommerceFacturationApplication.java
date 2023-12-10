@@ -43,10 +43,21 @@ public class EcommerceFacturationApplication implements CommandLineRunner {
                      ]
                      }""";
 
+        String json = "{\n" +
+                "  \"id\": 2,\n" +
+                "  \"reference\": \"cmd-100\",\n" +
+                "  \"totalPaye\": 123.45,\n" +
+                "  \"dateCommande\": [2023, 11, 29, 22, 14, 19, 934827000],\n" +
+                "  \"client\": \"{\\\"fullName\\\":\\\"John Doe\\\",\\\"email\\\":\\\"hamzajaa2022@gmail.com\\\",\\\"address\\\":\\\"123 Main St, Cityville\\\",\\\"phoneNumber\\\":\\\"+1234567890\\\"}\",\n" +
+                "  \"commandeItemDtos\": \"[" +
+                "{\\\"id\\\":1,\\\"quantity\\\":5,\\\"prix\\\":19.99,\\\"produit\\\":\\\"{\\\\\\\"id\\\\\\\":1,\\\\\\\"reference\\\\\\\":\\\\\\\"REF123\\\\\\\",\\\\\\\"prixProduit\\\\\\\":\\\\\\\"10\\\\\\\",\\\\\\\"libelle\\\\\\\":\\\\\\\"ProductA\\\\\\\",\\\\\\\"categorieProduitDto\\\\\\\":{\\\\\\\"id\\\\\\\":101,\\\\\\\"libele\\\\\\\":\\\\\\\"CategoryA\\\\\\\"}}\\\"}," +
+                "{\\\"id\\\":2,\\\"quantity\\\":3,\\\"prix\\\":29.99,\\\"produit\\\":\\\"{\\\\\\\"id\\\\\\\":2,\\\\\\\"reference\\\\\\\":\\\\\\\"REF456\\\\\\\",\\\\\\\"prixProduit\\\\\\\":\\\\\\\"20.55\\\\\\\",\\\\\\\"libelle\\\\\\\":\\\\\\\"ProductB\\\\\\\",\\\\\\\"categorieProduitDto\\\\\\\":{\\\\\\\"id\\\\\\\":102,\\\\\\\"libele\\\\\\\":\\\\\\\"CategoryB\\\\\\\"}}\\\"}," +
+                "{\\\"id\\\":3,\\\"quantity\\\":1,\\\"prix\\\":9.99,\\\"produit\\\":\\\"{\\\\\\\"id\\\\\\\":3,\\\\\\\"reference\\\\\\\":\\\\\\\"REF789\\\\\\\",\\\\\\\"prixProduit\\\\\\\":\\\\\\\"5.99\\\\\\\",\\\\\\\"libelle\\\\\\\":\\\\\\\"ProductC\\\\\\\",\\\\\\\"categorieProduitDto\\\\\\\":{\\\\\\\"id\\\\\\\":103,\\\\\\\"libele\\\\\\\":\\\\\\\"CategoryC\\\\\\\"}}\\\"}]\"\n" +
+                "}";
         Message<String> message = new Message<>() {
             @Override
             public String getPayload() {
-                return jsonMessage;
+                return json;
             }
 
             @Override
@@ -55,7 +66,7 @@ public class EcommerceFacturationApplication implements CommandLineRunner {
             }
         };
 
-//        messageConsumer.receiveMessage(message);
+        messageConsumer.receiveMessage(message);
         System.out.println(" ");
     }
 
