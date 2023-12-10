@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper extends AbstractMapper<User,UserDTO>{
+public class UserMapper extends AbstractMapper<User, UserDTO> {
 
     @Autowired
     private BankAccountMapper bankAccountMapper;
@@ -19,10 +19,9 @@ public class UserMapper extends AbstractMapper<User,UserDTO>{
 
     @Override
     public User toEntity(UserDTO userDTO) {
-        if(userDTO==null){
+        if (userDTO == null) {
             return null;
-        }
-        else{
+        } else {
             User user = new User();
             user.setId(userDTO.id());
             user.setFullName(userDTO.fullName());
@@ -39,10 +38,9 @@ public class UserMapper extends AbstractMapper<User,UserDTO>{
 
     @Override
     public UserDTO toDto(User user) {
-        if(user==null){
+        if (user == null) {
             return null;
-        }
-        else {
+        } else {
             UserDTO userDTO = new UserDTO(
                     user.getId(),
                     user.getFullName(),
@@ -51,7 +49,7 @@ public class UserMapper extends AbstractMapper<User,UserDTO>{
                     user.getPhoneNumber(),
                     user.getRole(),
                     bankAccountMapper.toDto(user.getBankAccounts()),
-                   billingToPayMapper.toDto(user.getBillingsToPay()),
+                    billingToPayMapper.toDto(user.getBillingsToPay()),
                     billingToReceiveMapper.toDto(user.getBillingsToReceive())
             );
             return userDTO;
@@ -59,11 +57,6 @@ public class UserMapper extends AbstractMapper<User,UserDTO>{
 
         }
     }
-
-
-
-
-
 
 
 }
