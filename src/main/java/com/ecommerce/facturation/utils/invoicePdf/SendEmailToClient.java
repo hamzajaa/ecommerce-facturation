@@ -23,7 +23,8 @@ public class SendEmailToClient {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-
+    @Value("${spring.user.pdf}")
+    String resourcePath;
     public void send(Invoice invoice) {
         try {
 //            Thread.sleep(10000);
@@ -35,7 +36,7 @@ public class SendEmailToClient {
             helper.setTo(invoice.getClientEmail());
             helper.setText("Please find attached the invoice for your recent order. The invoice contains all the necessary details, including the order number, date, due date, and total amount.\n");
             // Add attachments
-            FileSystemResource pdf = new FileSystemResource(new File("src/main/resources/invoices/" + invoice.getInvoiceNumber() + ".pdf"));
+            FileSystemResource pdf = new FileSystemResource(new File("pdf/" + invoice.getInvoiceNumber() + ".pdf"));
 //            helper.addInline(getContentId(pdf.getFilename()), pdf);
             helper.addAttachment("Invoice.pdf", pdf);
 

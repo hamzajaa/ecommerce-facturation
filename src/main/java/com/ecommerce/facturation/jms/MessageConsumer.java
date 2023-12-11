@@ -12,10 +12,12 @@ public class MessageConsumer {
     @Autowired
     private InvoiceService invoiceService;
 
-    @JmsListener(destination = "commandeBilling", containerFactory = "jmsListenerContainerFactory", concurrency = "3")
+    @JmsListener(destination = "commandeBilling2", containerFactory = "jmsListenerContainerFactory")
     public void receiveMessage(Message<String> orderDto) {
         System.out.println("Message reçu du topic : " + orderDto);
         String payload = orderDto.getPayload();
         invoiceService.setDataToInvoice(payload);
     }
+
+
 }

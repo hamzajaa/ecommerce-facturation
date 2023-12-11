@@ -14,6 +14,7 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -41,9 +42,11 @@ public class CodingErrorPdfInvoiceCreator {
         this.pdfName = pdfName;
     }
 
+    @Value("${spring.user.pdf}")
+    public static String resourcesPath;
+
     public void createDocument() throws FileNotFoundException {
-        String resourcesPath = "src/main/resources/invoices/";
-        String pdfFilePath = resourcesPath + pdfName;
+        String pdfFilePath = "pdf/"  + pdfName;
         Path pdfPath = Paths.get(pdfFilePath);
         PdfWriter pdfWriter = new PdfWriter(new FileOutputStream(pdfPath.toFile()));
         pdfDocument = new PdfDocument(pdfWriter);

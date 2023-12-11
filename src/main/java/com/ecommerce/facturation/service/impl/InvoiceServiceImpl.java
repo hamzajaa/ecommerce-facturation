@@ -14,6 +14,7 @@ import com.ecommerce.facturation.utils.invoicePdf.GenerateInvoicePdf;
 import com.ecommerce.facturation.utils.invoicePdf.SendEmailToClient;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class InvoiceServiceImpl implements InvoiceService {
     @Autowired
     private InvoiceDao invoiceDao;
@@ -41,6 +43,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<InvoiceDTO> getInvoices() {
+        log.info("Fetching all invoices.");
         return invoiceDao.findAll().stream().map(invoice -> invoiceMapper.fromInvoice(invoice)).collect(Collectors.toList());
     }
 
@@ -53,17 +56,19 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     @Transactional
     public InvoiceDTO save(InvoiceDTO invoiceDTO) {
+        log.info("Saving a new invoice.");
         Invoice invoice = invoiceMapper.fromInvoiceDto(invoiceDTO);
         Invoice savedInvoice = invoiceDao.save(invoice);
         try {
             generateInvoicePdf.generate(savedInvoice);
         } catch (FileNotFoundException e) {
+            log.error("Error generating PDF for invoice ID: {}", savedInvoice.getId(), e);
             throw new RuntimeException(e);
         }
         sendEmailToClient.send(invoice);
+        log.info("Invoice saved and send it successfully. ID: {}", savedInvoice.getId());
         return invoiceMapper.fromInvoice(savedInvoice);
     }
-
     public void setDataToInvoice(String payload) {
         OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
         ClientDTO clientDTO = jsonMapper.convertJsonToObject(orderDto.client(), ClientDTO.class);
@@ -81,6 +86,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         );
         save(invoiceDTO);
     }
+
 
 
     @Override

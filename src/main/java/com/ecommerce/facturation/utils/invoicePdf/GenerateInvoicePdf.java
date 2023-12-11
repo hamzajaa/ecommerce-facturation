@@ -10,6 +10,7 @@ import com.ecommerce.facturation.utils.invoicePdf.model.Product;
 import com.ecommerce.facturation.utils.invoicePdf.model.ProductTableHeader;
 import com.ecommerce.facturation.utils.invoicePdf.service.CodingErrorPdfInvoiceCreator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
@@ -23,6 +24,9 @@ public class GenerateInvoicePdf {
 
     @Autowired
     private JsonMapper jsonMapper;
+
+    @Value("${spring.user.pdf}")
+    String generalePath;
 
     public void generate(Invoice invoice) throws FileNotFoundException {
         String pdfName = invoice.getInvoiceNumber() + ".pdf";
@@ -66,12 +70,13 @@ public class GenerateInvoicePdf {
 
         //Product End
 
+
         //Term and Condition Start
-        String generalePath = "src/main/resources/invoices/";
+
         List<String> TncList = new ArrayList<>();
         TncList.add("1. The Seller shall not be liable to the Buyer directly or indirectly for any loss or damage suffered by the Buyer.");
         TncList.add("2. The Seller warrants the product for one (1) year from the date of shipment");
-        String imagePath = generalePath + "UIR.jpg";
+        String imagePath = "pdf/" + "UIR.jpg";
         cepdf.createTnc(TncList, false, imagePath);
         // Term and condition end
         System.out.println("pdf genrated");
