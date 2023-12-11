@@ -6,9 +6,6 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
-import javax.jms.Session;
-import java.util.List;
-
 @Component
 public class MessageConsumer {
 
