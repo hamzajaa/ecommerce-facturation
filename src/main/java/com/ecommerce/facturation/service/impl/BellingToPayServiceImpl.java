@@ -29,7 +29,7 @@ public class BellingToPayServiceImpl implements BillingToPayService {
     @Override
     public List<BillingToPayDTO> getBillingToPays() {
 
-        return billingToPayRepo.findAll().stream().map(billingToPayMapper::fromBilling).collect(Collectors.toList());
+        return billingToPayRepo.findAll().stream().map(billingToPayMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -37,14 +37,14 @@ public class BellingToPayServiceImpl implements BillingToPayService {
 
         //we don t have no id here to find by
         BillingToPay billingToPay = billingToPayRepo.findById(id).orElseThrow(()-> new BillingNotFoundException());
-        return billingToPayMapper.fromBilling(billingToPay);
+        return billingToPayMapper.toDto(billingToPay);
     }
 
     @Override
     public BillingToPayDTO save(BillingToPayDTO billingToPayDTO) {
 
-       BillingToPay billingToPay =  billingToPayMapper.fromBillingDto(billingToPayDTO);
-        return  billingToPayMapper.fromBilling(billingToPayRepo.save(billingToPay));
+       BillingToPay billingToPay =  billingToPayMapper.toEntity(billingToPayDTO);
+        return  billingToPayMapper.toDto(billingToPayRepo.save(billingToPay));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class BellingToPayServiceImpl implements BillingToPayService {
          billingToPay.setReason(billingToPayDTO.transactionalType());
          billingToPay.setPaymentStatus(billingToPayDTO.paymentStatus());
 
-        return  billingToPayMapper.fromBilling(billingToPayRepo.save(billingToPay));
+        return  billingToPayMapper.toDto(billingToPayRepo.save(billingToPay));
     }
 
     @Override

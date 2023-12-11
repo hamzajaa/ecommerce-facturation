@@ -18,19 +18,19 @@ public class BillingToReceiveServiceImpl implements BillingToReceiveService {
     @Override
     public List<BillingToReceiveDTO> getBillingToReceives() {
 
-        return billingToReceiveRepo.findAll().stream().map(billingToReceiveMapper::fromBilling).collect(Collectors.toList());
+        return billingToReceiveRepo.findAll().stream().map(billingToReceiveMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public BillingToReceiveDTO findById(Long id) {
         BillingToReceive billingToReceive = billingToReceiveRepo.findById(id).orElseThrow(()-> new BillingNotFoundException());
-        return billingToReceiveMapper.fromBilling(billingToReceive);
+        return billingToReceiveMapper.toDto(billingToReceive);
     }
 
     @Override
     public BillingToReceiveDTO save(BillingToReceiveDTO billingToReceiveDTO) {
-        BillingToReceive billingToPay =  billingToReceiveMapper.fromBillingDto(billingToReceiveDTO);
-        return  billingToReceiveMapper.fromBilling(billingToReceiveRepo.save(billingToPay));
+        BillingToReceive billingToPay =  billingToReceiveMapper.toEntity(billingToReceiveDTO);
+        return  billingToReceiveMapper.toDto(billingToReceiveRepo.save(billingToPay));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class BillingToReceiveServiceImpl implements BillingToReceiveService {
         billingToReceive.setReason(billingToReceiveDTO.transactionalType());
         billingToReceive.setPaymentStatus(billingToReceiveDTO.paymentStatus());
 
-        return  billingToReceiveMapper.fromBilling(billingToReceiveRepo.save(billingToReceive));
+        return  billingToReceiveMapper.toDto(billingToReceiveRepo.save(billingToReceive));
 
     }
 
