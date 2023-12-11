@@ -58,7 +58,7 @@ public class GenerateInvoicePdf {
         List<CommandItemDto> commandItemDtos = jsonMapper.convertJsonToObjects(invoice.getProducts(), CommandItemDto.class);
         for (CommandItemDto itemDto : commandItemDtos) {
             ProductDto productDto = jsonMapper.convertJsonToObject(itemDto.product(), ProductDto.class);
-            Product product = new Product(Optional.of(productDto.name()), itemDto.quantity(), productDto.unitPrice(), itemDto.amount());
+            Product product = new Product(Optional.of(productDto.name()), itemDto.quantity(), itemDto.amount(), itemDto.amount());
             productList.add(product);
         }
         productList = cepdf.modifyProductList(productList);

@@ -1,10 +1,6 @@
 package com.ecommerce.facturation;
 
-import com.ecommerce.facturation.bean.Credit;
-import com.ecommerce.facturation.dto.OrderDto;
 import com.ecommerce.facturation.jms.MessageConsumer;
-import com.ecommerce.facturation.ws.InvoiceController;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -67,8 +63,10 @@ public class EcommerceFacturationApplication implements CommandLineRunner {
             }
         };
 
-        messageConsumer.receiveMessage(message);
+//        messageConsumer.receiveMessage(message);
         System.out.println(" ");
+
+
     }
 
     @Autowired

@@ -15,7 +15,7 @@ public class MessageConsumer {
     @Autowired
     private InvoiceService invoiceService;
 
-//    @JmsListener(destination = "TEST-QUEUE", containerFactory = "jmsListenerContainerFactory", concurrency = "3")
+    @JmsListener(destination = "commandeBilling", containerFactory = "jmsListenerContainerFactory", concurrency = "3")
     public void receiveMessage(Message<String> orderDto) {
         System.out.println("Message reçu du topic : " + orderDto);
         String payload = orderDto.getPayload();
