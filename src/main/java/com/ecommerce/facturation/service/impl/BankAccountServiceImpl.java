@@ -1,11 +1,15 @@
 package com.ecommerce.facturation.service.impl;
 
 import com.ecommerce.facturation.bean.BankAccount;
+import com.ecommerce.facturation.bean.User;
 import com.ecommerce.facturation.dao.BankAccountDao;
+import com.ecommerce.facturation.dao.UserDao;
 import com.ecommerce.facturation.dto.BankAccountDTO;
+import com.ecommerce.facturation.dto.UserDTO;
 import com.ecommerce.facturation.exception.BankAccountNotFoundException;
 import com.ecommerce.facturation.mapper.BankAccountMapper;
 import com.ecommerce.facturation.service.facade.BankAccountService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,8 @@ public class BankAccountServiceImpl implements BankAccountService {
     private BankAccountDao bankAccountDao;
     @Autowired
     private BankAccountMapper bankAccountMapper;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public List<BankAccountDTO> getBankAccounts() {
@@ -27,17 +33,22 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public BankAccountDTO findById(Long id) throws BankAccountNotFoundException {
-        BankAccount bankAccount = bankAccountDao.findById(id).orElseThrow(() -> new BankAccountNotFoundException("Bank account not found with id: " + id));
+    public BankAccountDTO findById(Long id) throws EntityNotFoundException {
+        BankAccount bankAccount = bankAccountDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Bank account not found with id: " + id));
         return bankAccountMapper.toDto(bankAccount);
     }
 
     @Override
-    public BankAccountDTO save(BankAccountDTO bankAccountDTO) {
-        BankAccount bankAccount=bankAccountMapper.toEntity(bankAccountDTO);
-        BankAccount newBankAccount=bankAccountDao.save(bankAccount);
+    public BankAccountDTO save(BankAccountDTO bankAccountDTO) throws EntityNotFoundException {
+        Long userId = bankAccountDTO.userDto().id();
+        User userDTO = userDao.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+        BankAccount bankAccount = bankAccountMapper.toEntity(bankAccountDTO);
+        bankAccount.setUser(userDTO);
+        BankAccount newBankAccount = bankAccountDao.save(bankAccount);
         return bankAccountMapper.toDto(newBankAccount);
     }
+
 
     @Override
     public BankAccountDTO update(BankAccountDTO bankAccountDTO) {
