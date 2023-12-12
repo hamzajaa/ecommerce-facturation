@@ -29,9 +29,6 @@ public class UserMapper extends AbstractMapper<User, UserDTO> {
             user.setAddress(userDTO.address());
             user.setPhoneNumber(userDTO.phoneNumber());
             user.setRole(userDTO.role());
-            user.setBankAccounts(bankAccountMapper.toEntity(userDTO.bankAccountDTOS()));
-            user.setBillingsToPay(billingToPayMapper.toEntity(userDTO.billingToPayDTOS()));
-            user.setBillingsToReceive(billingToReceiveMapper.toEntity(userDTO.billingToReceiveDTOS()));
             return user;
         }
     }
@@ -47,10 +44,7 @@ public class UserMapper extends AbstractMapper<User, UserDTO> {
                     user.getEmail(),
                     user.getAddress(),
                     user.getPhoneNumber(),
-                    user.getRole(),
-                    bankAccountMapper.toDto(user.getBankAccounts()),
-                    billingToPayMapper.toDto(user.getBillingsToPay()),
-                    billingToReceiveMapper.toDto(user.getBillingsToReceive())
+                    user.getRole()
             );
             return userDTO;
 

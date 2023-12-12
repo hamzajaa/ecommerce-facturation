@@ -35,16 +35,7 @@ public record UserDTO(
     String phoneNumber,
 
     @NotNull(message = "Role cannot be null")
-    Role role,
-
-    @Valid
-    List<BankAccountDTO> bankAccountDTOS,
-
-    @Valid
-    List<BillingToPayDTO> billingToPayDTOS,
-
-    @Valid
-    List<BillingToReceiveDTO> billingToReceiveDTOS
+    Role role
 ){
 
 }
