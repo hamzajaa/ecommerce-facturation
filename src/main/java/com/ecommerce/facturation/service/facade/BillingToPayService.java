@@ -8,7 +8,7 @@ public interface BillingToPayService {
     List<BillingToPayDTO> getBillingToPays();
     BillingToPayDTO findById(Long id);
     BillingToPayDTO save(BillingToPayDTO billingToPayDTO);
-    BillingToPayDTO update(BillingToPayDTO billingToPayDTO);
+    BillingToPayDTO update(BillingToPayDTO billingToPayDTO,Long id);
     boolean deleteBillingToPayById(Long id);
 
 }

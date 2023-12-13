@@ -8,6 +8,6 @@ public interface BillingToReceiveService {
     List<BillingToReceiveDTO> getBillingToReceives();
     BillingToReceiveDTO findById(Long id);
     BillingToReceiveDTO save(BillingToReceiveDTO billingToReceiveDTO);
-    BillingToReceiveDTO update(BillingToReceiveDTO billingToReceiveDTO);
+    BillingToReceiveDTO update(BillingToReceiveDTO billingToReceiveDTO,Long id);
     boolean deleteBillingToReceiveById(Long id);
 }

@@ -20,19 +20,19 @@ public class CreditServiceImpl implements CreditService {
 
     @Override
     public List<CreditDTO> getCredits() {
-        return creditDao.findAll().stream().map(credit -> creditMapper.fromCredit(credit)).collect(Collectors.toList());
+        return creditMapper.toDto(creditDao.findAll());
     }
 
     @Override
     public CreditDTO findById(Long id) {
-        return creditMapper.fromCredit(creditDao.findById(id).get()) ;
+        return creditMapper.toDto(creditDao.findById(id).get()) ;
     }
 
     @Override
     public CreditDTO save(CreditDTO creditDTO) {
-        Credit credit = creditMapper.fromCreditDTO(creditDTO);
+        Credit credit = creditMapper.toEntity(creditDTO);
         creditDao.save(credit);
-        return creditMapper.fromCredit(credit) ;    }
+        return creditMapper.toDto(credit) ;    }
 
     @Override
     public CreditDTO update(CreditDTO creditDTO) {
@@ -43,8 +43,7 @@ public class CreditServiceImpl implements CreditService {
         // credit.setReceiver();
         // credit.setCreatedAt();
         // credit.setBillingsToReceive();
-
-        return creditMapper.fromCredit(credit);
+        return creditMapper.toDto(credit);
     }
 
     @Override

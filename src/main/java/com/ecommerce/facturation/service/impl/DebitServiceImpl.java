@@ -19,19 +19,19 @@ public class DebitServiceImpl implements DebitService {
     @Override
     public List<DebitDTO> getDebits() {
 
-        return debitDao.findAll().stream().map(debit -> debitMapper.fromDebit(debit)).collect(Collectors.toList());
+        return debitMapper.toDto(debitDao.findAll());
     }
 
     @Override
     public DebitDTO findById(Long id) {
-        return debitMapper.fromDebit(debitDao.findById(id).get()) ;
+        return debitMapper.toDto(debitDao.findById(id).get()) ;
     }
 
     @Override
     public DebitDTO save(DebitDTO debitDTO) {
-       Debit debit = debitMapper.fromDebitDTO(debitDTO);
+       Debit debit = debitMapper.toEntity(debitDTO);
        debitDao.save(debit);
-        return debitMapper.fromDebit(debit) ;
+        return debitMapper.toDto(debit) ;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class DebitServiceImpl implements DebitService {
         // debit.setCreatedAt();
         // debit.setBillingsToReceive();
 
-        return debitMapper.fromDebit(debit);
+        return debitMapper.toDto(debit);
     }
 
     @Override

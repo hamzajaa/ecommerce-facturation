@@ -9,16 +9,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@DiscriminatorValue("CREDIT")
+@DiscriminatorValue(value = "credit")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Credit extends TransactionCD {
 
     @OneToMany(mappedBy = "credit")
-    private Set<CreditBillingToPay> BillingsToPay;
+    private List<CreditBillingToPay> BillingsToPay;
 }
