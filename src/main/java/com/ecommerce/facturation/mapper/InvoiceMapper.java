@@ -31,6 +31,7 @@ public class InvoiceMapper {
         invoice.setOrderReference(invoiceDTO.orderReference());
         invoice.setDueDate(invoiceDTO.dueDate());
         invoice.setInvoiceStatus(invoiceDTO.invoiceStatus());
+        invoice.setPaymentMethod(invoiceDTO.paymentMethod());
         invoice.setTotalPay(invoiceDTO.totalPay());
         invoice.setClientName(invoiceDTO.clientName());
         invoice.setClientAddress(invoiceDTO.clientAddress());
@@ -50,6 +51,7 @@ public class InvoiceMapper {
                 invoice.getOrderReference(),
                 invoice.getDueDate(),
                 invoice.getInvoiceStatus(),
+                invoice.getPaymentMethod(),
                 invoice.getTotalPay(),
                 invoice.getClientName(),
                 invoice.getClientEmail(),

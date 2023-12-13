@@ -31,6 +31,7 @@ public class JmsConfig {
     public ConnectionFactory connectionFactory() throws JMSException {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
         connectionFactory.setBrokerURL(brokerUrl);
+        connectionFactory.setMaxThreadPoolSize(4);
         return connectionFactory;
     }
 
@@ -61,7 +62,7 @@ public class JmsConfig {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setSessionAcknowledgeMode(Session.AUTO_ACKNOWLEDGE);
-        factory.setClientId("facturation_id2");
+        factory.setClientId("facturation_id3");
         return factory;
     }
 }

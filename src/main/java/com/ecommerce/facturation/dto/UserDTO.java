@@ -19,23 +19,24 @@ import java.util.List;
 
 
 public record UserDTO(
-    @NotNull(message = "ID cannot be null")
-    Long id,
+        @NotNull(message = "ID cannot be null")
+        Long id,
 
-    @NotBlank(message = "Full name cannot be blank")
-    String fullName,
+        @NotBlank(message = "Full name cannot be blank")
+        String fullName,
 
-    @Email(message = "Email should be valid")
-    String email,
+        @Email(message = "Email should be valid")
+        String email,
 
-    @NotBlank(message = "Address cannot be blank")
-    String address,
+        @NotBlank(message = "Address cannot be blank")
+        String address,
 
-    @Pattern(regexp = "\\d{10}", message = "Phone number should be 10 digits")
-    String phoneNumber,
+        @Pattern(regexp = "\\d{10}", message = "Phone number should be 10 digits")
+        String phoneNumber,
 
-    @NotNull(message = "Role cannot be null")
-    Role role
-){
+        @NotNull(message = "Role cannot be null")
+        Role role
+) {
+
 
 }

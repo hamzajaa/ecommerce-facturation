@@ -14,15 +14,18 @@ public class BankAccountMapper extends AbstractMapper<BankAccount,BankAccountDTO
     @Override
     public BankAccount toEntity(BankAccountDTO dto) {
         BankAccount bankAccount = new BankAccount();
+        bankAccount.setId(dto.id());
         bankAccount.setRib(dto.ribDTO());
         bankAccount.setBank(dto.bank());
         bankAccount.setUser(userMapper.toEntity(dto.userDto()));
         return bankAccount;
+
     }
 
     @Override
     public BankAccountDTO toDto(BankAccount entity) {
         BankAccountDTO bankAccountDTO = new BankAccountDTO(
+                entity.getId(),
                 entity.getRib(),
                 entity.getBank(),
                 userMapper.toDto(entity.getUser())

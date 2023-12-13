@@ -15,8 +15,14 @@ public class HeaderDetails {
     String invoiceTitle = ConstantUtil.INVOICE_TITLE;
     String invoiceNoText = ConstantUtil.INVOICE_NO_TEXT;
     String invoiceDateText = ConstantUtil.INVOICE_DATE_TEXT;
-    String invoiceNo = ConstantUtil.EMPTY;
+    String invoiceNumber = ConstantUtil.EMPTY;
     String invoiceDate = ConstantUtil.EMPTY;
+    String invoiceStatusText = ConstantUtil.INVOICE_STATUS_TEXT;
+    String paymentMethodText = ConstantUtil.PAYMENT_METHOD_TEXT;
+    String invoiceStatus = ConstantUtil.EMPTY;
+    String paymentMethod = ConstantUtil.EMPTY;
+
+
     Color borderColor = Color.GRAY;
 
     public HeaderDetails setInvoiceTitle(String invoiceTitle) {
@@ -34,8 +40,8 @@ public class HeaderDetails {
         return this;
     }
 
-    public HeaderDetails setInvoiceNo(String invoiceNo) {
-        this.invoiceNo = invoiceNo;
+    public HeaderDetails setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
         return this;
     }
 
@@ -44,10 +50,21 @@ public class HeaderDetails {
         return this;
     }
 
+    public HeaderDetails setInvoiceStatus(String invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
+        return this;
+    }
+
+    public HeaderDetails setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+        return this;
+    }
+
     public HeaderDetails setBorderColor(Color borderColor) {
         this.borderColor = borderColor;
         return this;
     }
+
 
     public HeaderDetails build() {
         return this;

@@ -1,5 +1,7 @@
 package com.ecommerce.facturation.utils.invoicePdf.service;
 
+import com.ecommerce.facturation.Enum.InvoiceStatus;
+import com.ecommerce.facturation.Enum.PaymentMethod;
 import com.ecommerce.facturation.utils.invoicePdf.model.*;
 import com.itextpdf.kernel.color.Color;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
@@ -46,7 +48,7 @@ public class CodingErrorPdfInvoiceCreator {
     public static String resourcesPath;
 
     public void createDocument() throws FileNotFoundException {
-        String pdfFilePath = "pdf/"  + pdfName;
+        String pdfFilePath = "pdf/" + pdfName;
         Path pdfPath = Paths.get(pdfFilePath);
         PdfWriter pdfWriter = new PdfWriter(new FileOutputStream(pdfPath.toFile()));
         pdfDocument = new PdfDocument(pdfWriter);
@@ -61,7 +63,6 @@ public class CodingErrorPdfInvoiceCreator {
             Table tb = new Table(fullwidth);
             tb.addCell(new Cell().add("TERMS AND CONDITIONS\n").setBold().setBorder(Border.NO_BORDER));
             for (String tnc : TncList) {
-
                 tb.addCell(new Cell().add(tnc).setBorder(Border.NO_BORDER));
             }
 
@@ -162,9 +163,14 @@ public class CodingErrorPdfInvoiceCreator {
         table.addCell(new Cell().add(header.getInvoiceTitle()).setFontSize(20f).setBorder(Border.NO_BORDER).setBold());
         Table nestedtabe = new Table(new float[]{twocol / 2, twocol / 2});
         nestedtabe.addCell(getHeaderTextCell(header.getInvoiceNoText()));
-        nestedtabe.addCell(getHeaderTextCellValue(header.getInvoiceNo()));
+        nestedtabe.addCell(getHeaderTextCellValue(header.getInvoiceNumber()));
         nestedtabe.addCell(getHeaderTextCell(header.getInvoiceDateText()));
         nestedtabe.addCell(getHeaderTextCellValue(header.getInvoiceDate()));
+        nestedtabe.addCell(getHeaderTextCell(header.getInvoiceStatusText()));
+        nestedtabe.addCell(getHeaderTextCellValue(header.getInvoiceStatus()));
+        nestedtabe.addCell(getHeaderTextCell(header.getPaymentMethodText()));
+        nestedtabe.addCell(getHeaderTextCellValue(header.getPaymentMethod()));
+
         table.addCell(new Cell().add(nestedtabe).setBorder(Border.NO_BORDER));
         Border gb = new SolidBorder(header.getBorderColor(), 2f);
         document.add(table);
@@ -204,14 +210,17 @@ public class CodingErrorPdfInvoiceCreator {
         return new Paragraph("\n");
     }
 
-    static Cell getHeaderTextCell(String textValue) {
+    static Cell getHeaderTextCell(String labelText, String cellValue) {
+        return new Cell().add(new Paragraph(labelText).setTextAlignment(TextAlignment.LEFT))
+                .add(new Paragraph(cellValue).setTextAlignment(TextAlignment.RIGHT))
+                .setBorder(Border.NO_BORDER);
+    }
 
-        return new Cell().add(textValue).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT);
+    static Cell getHeaderTextCell(String textValue) {
+        return new Cell().add(textValue).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
     }
 
     static Cell getHeaderTextCellValue(String textValue) {
-
-
         return new Cell().add(textValue).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
     }
 

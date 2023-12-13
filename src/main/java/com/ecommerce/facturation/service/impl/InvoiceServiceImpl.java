@@ -1,26 +1,27 @@
 package com.ecommerce.facturation.service.impl;
 
 import com.ecommerce.facturation.Enum.InvoiceStatus;
+import com.ecommerce.facturation.Enum.PaymentMethod;
 import com.ecommerce.facturation.bean.Invoice;
 import com.ecommerce.facturation.dao.InvoiceDao;
-import com.ecommerce.facturation.dto.ClientDTO;
-import com.ecommerce.facturation.dto.CommandItemDto;
-import com.ecommerce.facturation.dto.InvoiceDTO;
-import com.ecommerce.facturation.dto.OrderDto;
+import com.ecommerce.facturation.dto.*;
 import com.ecommerce.facturation.mapper.InvoiceMapper;
 import com.ecommerce.facturation.mapper.JsonMapper;
 import com.ecommerce.facturation.service.facade.InvoiceService;
+import com.ecommerce.facturation.service.facade.TransactionService;
 import com.ecommerce.facturation.utils.invoicePdf.GenerateInvoicePdf;
 import com.ecommerce.facturation.utils.invoicePdf.SendEmailToClient;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +37,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     private SendEmailToClient sendEmailToClient;
     @Autowired
     private JsonMapper jsonMapper;
+    @Autowired
+    private TransactionService transactionService;
 
     public void setInvoiceMapper(InvoiceMapper invoiceMapper) {
         this.invoiceMapper = invoiceMapper;
@@ -59,24 +62,32 @@ public class InvoiceServiceImpl implements InvoiceService {
         log.info("Saving a new invoice.");
         Invoice invoice = invoiceMapper.fromInvoiceDto(invoiceDTO);
         Invoice savedInvoice = invoiceDao.save(invoice);
+//        switch (savedInvoice.getPaymentMethod()) {
+//            case ONLINE -> transactionService.saveDebit(new DebitDTO());
+//            case ON_DELIVERY -> transactionService.saveCredit(new CreditDTO());
+//        }
         try {
             generateInvoicePdf.generate(savedInvoice);
+            log.info("PDF Invoice generate successfully. ID {}", savedInvoice.getId());
         } catch (FileNotFoundException e) {
             log.error("Error generating PDF for invoice ID: {}", savedInvoice.getId(), e);
             throw new RuntimeException(e);
         }
         sendEmailToClient.send(invoice);
-        log.info("Invoice saved and send it successfully. ID: {}", savedInvoice.getId());
         return invoiceMapper.fromInvoice(savedInvoice);
     }
-    public void setDataToInvoice(String payload) {
+
+    @Async
+    public CompletableFuture<InvoiceDTO> setDataToInvoice(String payload) {
+        long startDate = System.currentTimeMillis();
         OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
         ClientDTO clientDTO = jsonMapper.convertJsonToObject(orderDto.client(), ClientDTO.class);
         List<CommandItemDto> commandItemDtos = jsonMapper.convertJsonToObjects(orderDto.commandItemDtos(), CommandItemDto.class);
         InvoiceDTO invoiceDTO = new InvoiceDTO(
                 orderDto.reference(),
                 LocalDateTime.now().plusDays(30),
-                InvoiceStatus.Paid,
+                orderDto.paymentMethod() == 0 ? InvoiceStatus.PENDING : InvoiceStatus.PAID,
+                orderDto.paymentMethod() == 0 ? PaymentMethod.ON_DELIVERY : PaymentMethod.ONLINE,
                 orderDto.totalPay(),
                 clientDTO.fullName(),
                 clientDTO.address(),
@@ -85,8 +96,10 @@ public class InvoiceServiceImpl implements InvoiceService {
                 commandItemDtos
         );
         save(invoiceDTO);
+        long endDate = System.currentTimeMillis();
+        log.info("Total time {}  {}", invoiceDTO.invoiceId(), (endDate - startDate) + "ms");
+        return CompletableFuture.completedFuture(invoiceDTO);
     }
-
 
 
     @Override

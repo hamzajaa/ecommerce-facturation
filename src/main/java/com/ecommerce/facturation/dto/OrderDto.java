@@ -30,8 +30,11 @@ public record OrderDto(
         String client,
 
         @NotNull(message = "Order Items Cannot be null")
-        @JsonProperty("commandItems")
-        String commandItemDtos
+        @JsonProperty("commandeItems")
+        String commandItemDtos,
+
+        @JsonProperty("methodDePaiement")
+        int paymentMethod
 
 ) {
 }

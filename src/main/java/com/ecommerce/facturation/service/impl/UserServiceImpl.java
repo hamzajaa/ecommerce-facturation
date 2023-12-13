@@ -53,10 +53,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteUserById(Long id) {
         UserDTO userDTO = findById(id);
-        if(userDTO !=null){
+        if (userDTO != null) {
             userDao.deleteById(id);
             return true;
-        }
-        else return false;
+        } else return false;
+    }
+
+    @Override
+    public UserDTO findByEmail(String email) {
+        User foundedUser = userDao.findByEmail(email);
+        return userMapper.toDto(foundedUser);
     }
 }

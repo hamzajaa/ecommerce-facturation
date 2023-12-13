@@ -4,11 +4,14 @@ public class ConstantUtil {
     private ConstantUtil() {
     }
 
+
     public static final String EMPTY = "";
     //Header
-    public static final String INVOICE_TITLE = "This Invoice just for testing From JAA HAMZA";
-    public static final String INVOICE_NO_TEXT = "Invoice No.";
-    public static final String INVOICE_DATE_TEXT = "Invoice Date";
+    public static final String INVOICE_TITLE = "This Invoice just for testing From JAA HAMZA " + "©";
+    public static final String INVOICE_STATUS_TEXT = "Invoice Status: ";
+    public static final String PAYMENT_METHOD_TEXT = "Payment Method: ";
+    public static final String INVOICE_NO_TEXT = "Invoice Number: ";
+    public static final String INVOICE_DATE_TEXT = "Invoice Date: ";
     //Address
     public static final String BILLING_INFO = "Billing Information";
     public static final String SHIPPING_INFO = "Shipping Information";

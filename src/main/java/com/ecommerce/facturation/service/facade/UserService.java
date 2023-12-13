@@ -10,4 +10,6 @@ public interface UserService {
     UserDTO save(UserDTO userDTO);
     UserDTO update(UserDTO userDTO);
     boolean deleteUserById(Long id);
+    UserDTO findByEmail(String email);
+
 }

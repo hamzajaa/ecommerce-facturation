@@ -22,7 +22,6 @@ public class AddressDetails {
     private String billingAddress = ConstantUtil.EMPTY;
     private String billingEmailText = ConstantUtil.BILLING_EMAIL;
     private String billingEmail = ConstantUtil.EMPTY;
-
     private String shippingNameText = ConstantUtil.SHIPPING_NAME;
     private String shippingName = ConstantUtil.EMPTY;
     private String shippingAddressText = ConstantUtil.SHIPPING_ADDRESS;

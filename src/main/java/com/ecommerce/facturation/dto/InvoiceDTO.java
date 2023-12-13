@@ -1,6 +1,7 @@
 package com.ecommerce.facturation.dto;
 
 import com.ecommerce.facturation.Enum.InvoiceStatus;
+import com.ecommerce.facturation.Enum.PaymentMethod;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -19,6 +20,7 @@ public record InvoiceDTO(
         @Future(message = "Due date must be in the future")
         LocalDateTime dueDate,
         InvoiceStatus invoiceStatus,
+        PaymentMethod paymentMethod,
         @NotNull(message = "Total pay cannot be null")
         @DecimalMin(value = "0.0", inclusive = false, message = "Total pay must be greater than 0")
         BigDecimal totalPay,
@@ -36,6 +38,7 @@ public record InvoiceDTO(
     public InvoiceDTO(String orderReference,
                       LocalDateTime dueDate,
                       InvoiceStatus invoiceStatus,
+                      PaymentMethod paymentMethod,
                       BigDecimal totalPay,
                       String clientName,
                       String clientAddress,
@@ -46,6 +49,7 @@ public record InvoiceDTO(
                 orderReference,
                 dueDate,
                 invoiceStatus,
+                paymentMethod,
                 totalPay,
                 clientName,
                 clientAddress,
@@ -53,4 +57,5 @@ public record InvoiceDTO(
                 clientEmail,
                 commandeItemDtos);
     }
+
 }

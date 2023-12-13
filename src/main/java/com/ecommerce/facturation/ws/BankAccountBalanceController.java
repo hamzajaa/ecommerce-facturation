@@ -2,6 +2,7 @@ package com.ecommerce.facturation.ws;
 
 import com.ecommerce.facturation.dto.BankAccountBalanceDTO;
 import com.ecommerce.facturation.exception.BankAccountBalanceNotFoundException;
+import com.ecommerce.facturation.exception.BankAccountNotFoundException;
 import com.ecommerce.facturation.service.impl.BankAccountBalanceServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class BankAccountBalanceController {
         return ResponseEntity.ok(bankAccountBalanceService.deleteBankAccountBalanceById(id));
     }
     @PutMapping("/")
-    public ResponseEntity<BankAccountBalanceDTO> updateBankAccountBalance(@Valid @RequestBody BankAccountBalanceDTO bankAccountBalanceDTO){
+    public ResponseEntity<BankAccountBalanceDTO> updateBankAccountBalance(@Valid @RequestBody BankAccountBalanceDTO bankAccountBalanceDTO) throws BankAccountNotFoundException {
         return ResponseEntity.ok(bankAccountBalanceService.update(bankAccountBalanceDTO));
     }
     @PostMapping("/")

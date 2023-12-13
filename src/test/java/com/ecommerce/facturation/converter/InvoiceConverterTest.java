@@ -1,6 +1,7 @@
 package com.ecommerce.facturation.converter;
 
 import com.ecommerce.facturation.Enum.InvoiceStatus;
+import com.ecommerce.facturation.Enum.PaymentMethod;
 import com.ecommerce.facturation.bean.Invoice;
 import com.ecommerce.facturation.dto.ClientDTO;
 import com.ecommerce.facturation.dto.CommandItemDto;
@@ -38,7 +39,7 @@ public class InvoiceConverterTest {
     void testConvertDTOtoEntity_Success() {
         InvoiceDTO invoiceDTO = new InvoiceDTO(1L, "hdd",
                 LocalDateTime.now(),
-                InvoiceStatus.Pending,
+                InvoiceStatus.PENDING, PaymentMethod.ONLINE,
                 BigDecimal.ZERO,
                 "hamza", "hamza@gmail.com", "marrakech", "+212662356987",
                 List.of(
@@ -60,7 +61,7 @@ public class InvoiceConverterTest {
         Invoice invoice = new Invoice();
         invoice.setId(1L);
         invoice.setOrderReference("hhhh");
-        invoice.setInvoiceStatus(InvoiceStatus.Paid);
+        invoice.setInvoiceStatus(InvoiceStatus.PAID);
         invoice.setTotalPay(BigDecimal.valueOf(155.22));
         invoice.setClientName("hamza");
         invoice.setClientAddress("marrakech");

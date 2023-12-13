@@ -11,6 +11,8 @@ import com.ecommerce.facturation.utils.invoicePdf.model.ProductTableHeader;
 import com.ecommerce.facturation.utils.invoicePdf.service.CodingErrorPdfInvoiceCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
@@ -18,8 +20,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Component
+//@EnableAsync
 public class GenerateInvoicePdf {
 
     @Autowired
@@ -28,15 +32,23 @@ public class GenerateInvoicePdf {
     @Value("${spring.user.pdf}")
     String generalePath;
 
+    //    @Async
     public void generate(Invoice invoice) throws FileNotFoundException {
+        System.out.println("Current Thread in generate method is: " + Thread.currentThread());
         String pdfName = invoice.getInvoiceNumber() + ".pdf";
         CodingErrorPdfInvoiceCreator cepdf = new CodingErrorPdfInvoiceCreator(pdfName);
-        cepdf.createDocument();
+        try {
+            cepdf.createDocument();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         //Create Header start
         HeaderDetails header = new HeaderDetails();
-        header.setInvoiceNo(invoice.getInvoiceNumber())
+        header.setInvoiceNumber(invoice.getInvoiceNumber())
                 .setInvoiceDate(invoice.getCreatedAt().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")))
+                .setInvoiceStatus(invoice.getInvoiceStatus().toString())
+                .setPaymentMethod(invoice.getPaymentMethod().toString())
                 .build();
         cepdf.createHeader(header);
         //Header End
@@ -45,9 +57,9 @@ public class GenerateInvoicePdf {
         AddressDetails addressDetails = new AddressDetails();
         addressDetails
                 .setBillingCompany("UIR-SHOP")
-                .setBillingName("name.........")
+                .setBillingName("responsible")
                 .setBillingAddress("RABAT Technopolis")
-                .setBillingEmail(invoice.getClientEmail())
+                .setBillingEmail("responsable@gmail.com")
                 .setShippingName(invoice.getClientName())
                 .setShippingAddress(invoice.getClientAddress())
                 .build();

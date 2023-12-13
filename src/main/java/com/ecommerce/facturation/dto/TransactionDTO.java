@@ -12,8 +12,10 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Data @NoArgsConstructor @AllArgsConstructor
-public class TransactionDTO{
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class TransactionDTO {
     @NotNull(message = "id cannot be null")
     private Long id;
     @NotNull(message = "Full name cannot be null")
