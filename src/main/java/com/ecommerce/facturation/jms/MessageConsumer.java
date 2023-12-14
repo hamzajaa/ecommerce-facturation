@@ -53,13 +53,5 @@ public class MessageConsumer {
 
     }
 
-    //    @JmsListener(destination = "commandeBillingCOD", containerFactory = "jmsListenerContainerFactory", concurrency = "6")
-    public void receiveMessageOrderPaid(Message<String> orderDto) {
-        System.out.println("Current Thread in receiveMessage: " + Thread.currentThread());
-        System.out.println("Message reçu du topic : " + orderDto);
-        String payload = orderDto.getPayload();
-        invoiceService.setDataToInvoiceUpdate(payload).join();
-    }
-
 
 }

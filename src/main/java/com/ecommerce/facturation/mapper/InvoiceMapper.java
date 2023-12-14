@@ -1,17 +1,11 @@
 package com.ecommerce.facturation.mapper;
 
 import com.ecommerce.facturation.bean.Invoice;
-import com.ecommerce.facturation.dto.ClientDTO;
 import com.ecommerce.facturation.dto.CommandItemDto;
 import com.ecommerce.facturation.dto.InvoiceDTO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -66,7 +60,7 @@ public class InvoiceMapper {
                 products,
                 invoice.getCreatedAt(),
                 invoice.getUpdatedAt()
-        );
+                );
 
         return invoiceDTO;
     }

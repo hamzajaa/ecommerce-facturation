@@ -16,11 +16,9 @@ import com.ecommerce.facturation.service.facade.BankAccountService;
 import com.ecommerce.facturation.service.facade.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,14 +46,13 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    @Async
-    public CompletableFuture<BankAccountDTO> save(BankAccountDTO bankAccountDTO) throws EntityNotFoundException {
+    public BankAccountDTO save(BankAccountDTO bankAccountDTO) throws EntityNotFoundException {
         Long userId = bankAccountDTO.userDto().id();
         UserDTO foundedUser = userService.findById(userId);
         BankAccount bankAccount = bankAccountMapper.toEntity(bankAccountDTO);
         bankAccount.setUser(userMapper.toEntity(foundedUser));
         BankAccount newBankAccount = bankAccountDao.save(bankAccount);
-        return CompletableFuture.completedFuture(bankAccountMapper.toDto(newBankAccount));
+        return bankAccountMapper.toDto(newBankAccount);
     }
 
 
@@ -85,8 +82,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     private JsonMapper jsonMapper;
 
     @Override
-    @Async
-    public CompletableFuture<BankAccountDTO> setDataProviderToBankAccount(String payload) {
+    public void setDataProviderToBankAccount(String payload) {
         ProviderDto providerDto = jsonMapper.convertJsonToObject(payload, ProviderDto.class);
         UserDTO userDTO = new UserDTO(
                 providerDto.fullName(),
@@ -102,12 +98,10 @@ public class BankAccountServiceImpl implements BankAccountService {
                 savedUser
         );
         save(bankAccountDTO);
-        return CompletableFuture.completedFuture(bankAccountDTO);
     }
 
     @Override
-    @Async
-    public CompletableFuture<BankAccountDTO> setDataDeliveryManToBankAccount(String payload) {
+    public BankAccountDTO setDataDeliveryManToBankAccount(String payload) {
         DeliveryManDto deliveryManDto = jsonMapper.convertJsonToObject(payload, DeliveryManDto.class);
         UserDTO userDTO = new UserDTO(
                 deliveryManDto.fullName(),
@@ -123,6 +117,6 @@ public class BankAccountServiceImpl implements BankAccountService {
                 savedUser
         );
         save(bankAccountDTO);
-        return CompletableFuture.completedFuture(bankAccountDTO);
+        return bankAccountDTO;
     }
 }

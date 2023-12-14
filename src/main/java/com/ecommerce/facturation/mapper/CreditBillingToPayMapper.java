@@ -3,9 +3,11 @@ package com.ecommerce.facturation.mapper;
 import com.ecommerce.facturation.bean.association.CreditBillingToPay;
 import com.ecommerce.facturation.dto.CreditBillingToPayDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@EqualsAndHashCode(callSuper = true)
 @Component
 @Data
 public class CreditBillingToPayMapper extends AbstractMapper<CreditBillingToPay, CreditBillingToPayDTO> {

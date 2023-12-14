@@ -11,9 +11,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -49,6 +46,7 @@ public class Invoice extends AbstractSupperClass {
 
     @Column(length = 100_000)
     private String products;
+
 
     @PrePersist
     private void generateInvoiceNumber() {

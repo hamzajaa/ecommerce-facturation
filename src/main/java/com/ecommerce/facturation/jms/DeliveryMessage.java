@@ -1,7 +1,5 @@
 package com.ecommerce.facturation.jms;
 
-import com.ecommerce.facturation.dto.BankAccountDTO;
-import com.ecommerce.facturation.service.facade.BankAccountService;
 import com.ecommerce.facturation.service.facade.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
@@ -9,17 +7,10 @@ import org.springframework.messaging.Message;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-
 @Component
 public class DeliveryMessage {
 
-    @Autowired
-    private BankAccountService bankAccountService;
-//    private static int bankAccountThreadIndex = 0;
+    //    private static int bankAccountThreadIndex = 0;
 //    static ThreadFactory bankAccountThreadFactory = (r) -> new Thread(r, "BankAccountD-" + bankAccountThreadIndex++);
 
 
@@ -40,7 +31,8 @@ public class DeliveryMessage {
 
     @Autowired
     private InvoiceService invoiceService;
-//    @Async
+
+    @Async
     @JmsListener(destination = "CommandeStatusTopic", containerFactory = "jmsListenerTopicContainerFactory", concurrency = "1000")
     public void receiveMessage(Message<String> orderDto) {
         System.out.println("Current Thread in receiveMessage: " + Thread.currentThread());

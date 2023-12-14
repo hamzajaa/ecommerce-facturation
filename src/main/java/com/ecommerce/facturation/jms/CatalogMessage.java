@@ -3,15 +3,9 @@ package com.ecommerce.facturation.jms;
 
 import com.ecommerce.facturation.service.facade.BankAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.Message;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 @Component
 public class CatalogMessage {
@@ -28,7 +22,7 @@ public class CatalogMessage {
         System.out.println("Current Thread in receiveMessage: " + Thread.currentThread());
         System.out.println("Message reçu du topic : " + orderDto);
         String payload = orderDto.getPayload();
-        bankAccountService.setDataProviderToBankAccount(payload).join();
+        bankAccountService.setDataProviderToBankAccount(payload);
 
 //        ExecutorService bankAccountExecutorService = Executors.newFixedThreadPool(4, bankAccountThreadFactory);
 //

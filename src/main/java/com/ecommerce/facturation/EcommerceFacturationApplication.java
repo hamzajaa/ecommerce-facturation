@@ -1,15 +1,10 @@
 package com.ecommerce.facturation;
 
 import com.ecommerce.facturation.Enum.Bank;
-import com.ecommerce.facturation.Enum.PaymentStatus;
 import com.ecommerce.facturation.Enum.Role;
-import com.ecommerce.facturation.Enum.TransactionalType;
-import com.ecommerce.facturation.bean.BillingToReceive;
-import com.ecommerce.facturation.bean.Credit;
-import com.ecommerce.facturation.bean.Debit;
-import com.ecommerce.facturation.bean.association.DebitBillingToReceive;
-import com.ecommerce.facturation.dao.BankAccountDao;
-import com.ecommerce.facturation.dto.*;
+import com.ecommerce.facturation.dto.BankAccountBalanceDTO;
+import com.ecommerce.facturation.dto.BankAccountDTO;
+import com.ecommerce.facturation.dto.UserDTO;
 import com.ecommerce.facturation.jms.MessageConsumer;
 import com.ecommerce.facturation.service.facade.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +15,6 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class EcommerceFacturationApplication implements CommandLineRunner {
@@ -63,68 +56,68 @@ public class EcommerceFacturationApplication implements CommandLineRunner {
         }
 
 
-        UserDTO userDTO1 = new UserDTO(null,"WALID","zaanoun3@gmail.com","ddsqdsqdsqdd","+2121234567890",Role.CLIENT);
-        UserDTO savedUser1 = userService.save(userDTO1);
-        BankAccountDTO bankAccountDTO = new BankAccountDTO("12345678212",Bank.CIHBANK,savedUser1);
-        BankAccountDTO savedBankAccount = bankAccountService.save(bankAccountDTO);
-
-        BillingToPayDTO billingToPayDTO = new BillingToPayDTO(new BigDecimal(100), PaymentStatus.Successful,savedUser1, TransactionalType.Sale);
-        BillingToPayDTO billingToPayDTO2 = new BillingToPayDTO(new BigDecimal(200), PaymentStatus.Successful,savedUser1, TransactionalType.Sale);
-        BillingToPayDTO savedBillingToPay = billingToPayService.save(billingToPayDTO);
-        BillingToPayDTO savedBillingToPay1 = billingToPayService.save(billingToPayDTO2);
+//        UserDTO userDTO1 = new UserDTO(null,"WALID","zaanoun3@gmail.com","ddsqdsqdsqdd","+2121234567890",Role.CLIENT);
+//        UserDTO savedUser1 = userService.save(userDTO1);
+//        BankAccountDTO bankAccountDTO = new BankAccountDTO("12345678212",Bank.CIHBANK,savedUser1);
+//        BankAccountDTO savedBankAccount = bankAccountService.save(bankAccountDTO);
+//
+//        BillingToPayDTO billingToPayDTO = new BillingToPayDTO(new BigDecimal(100), PaymentStatus.Successful,savedUser1, TransactionalType.Sale);
+//        BillingToPayDTO billingToPayDTO2 = new BillingToPayDTO(new BigDecimal(200), PaymentStatus.Successful,savedUser1, TransactionalType.Sale);
+//        BillingToPayDTO savedBillingToPay = billingToPayService.save(billingToPayDTO);
+//        BillingToPayDTO savedBillingToPay1 = billingToPayService.save(billingToPayDTO2);
 
         ////////////
-        CreditDTO creditDTO= new CreditDTO();
-
-
-        creditDTO.setAmount(new BigDecimal(300));
-        creditDTO.setSender(savedBankAccountUir);
-        creditDTO.setReceiver(savedBankAccount);
-        creditDTO.setPaymentStatus(PaymentStatus.Successful);
-        creditDTO.setTransactionalType(TransactionalType.Sale);
-        creditDTO.setInvoice(null);
-
-        CreditDTO saveCredit = transactionService.saveCredit(creditDTO);
-
-        List<CreditBillingToPayDTO> creditBillingToPayDTOS = new ArrayList<>();
-
-        CreditBillingToPayDTO creditBillingToPayDTO = new CreditBillingToPayDTO(null,saveCredit,savedBillingToPay);
-        creditBillingToPayDTOS.add(creditBillingToPayDTO);
-
-        CreditBillingToPayDTO creditBillingToPayDTO1 = new CreditBillingToPayDTO(null,saveCredit,savedBillingToPay1);
-        creditBillingToPayDTOS.add(creditBillingToPayDTO1);
-
-        saveCredit.setCreditBillingToPays(creditBillingToPayDTOS);
-        //CreditDTO savedCredit1 = transactionService.saveCredit(saveCredit);
-        // TODO create Service for Credit Billing to Pay
-        //////
-
-        BillingToReceiveDTO billingToReceiveDTO = new BillingToReceiveDTO(new BigDecimal(100),PaymentStatus.Successful,savedUser1,TransactionalType.Sale);
-        BillingToReceiveDTO billingToReceiveDTO1 = new BillingToReceiveDTO(new BigDecimal(200), PaymentStatus.Successful,savedUser1,TransactionalType.Sale);
-        BillingToReceiveDTO savedBillingToReceiveDTO = billingToReceiveService.save(billingToReceiveDTO);
-        BillingToReceiveDTO savedBillingToReceiveDTO2 = billingToReceiveService.save(billingToReceiveDTO1);
-
-        DebitDTO debitDTO = new DebitDTO();
-        debitDTO.setAmount(new BigDecimal(300));
-        debitDTO.setInvoice(null);
-        debitDTO.setSender(savedBankAccount);
-        debitDTO.setReceiver(savedBankAccountUir);
-        debitDTO.setPaymentStatus(PaymentStatus.Successful);
-        debitDTO.setTransactionalType(TransactionalType.Sale);
-
-        DebitDTO savedDebitDTO = transactionService.saveDebit(debitDTO);
-
-        List<DebitBillingToReceiveDTO> debitBillingToReceiveDTOS=new ArrayList<>();
-        DebitBillingToReceiveDTO debitBillingToReceiveDTO = new DebitBillingToReceiveDTO(null,savedDebitDTO,savedBillingToReceiveDTO);
-        DebitBillingToReceiveDTO debitBillingToReceiveDTO1 = new DebitBillingToReceiveDTO(null,savedDebitDTO,savedBillingToReceiveDTO2);
-        debitBillingToReceiveDTOS.add(debitBillingToReceiveDTO);
-        debitBillingToReceiveDTOS.add(debitBillingToReceiveDTO1);
-
-        savedDebitDTO.setDebitBillingToReceiveDTOS(debitBillingToReceiveDTOS);
-
-        //DebitDTO saveDebitDTO1 = transactionService.saveDebit(savedDebitDTO);
-
-        // TODO create Service for Credit Billing to Pay
+//        CreditDTO creditDTO= new CreditDTO();
+//
+//
+//        creditDTO.setAmount(new BigDecimal(300));
+//        creditDTO.setSender(savedBankAccountUir);
+//        creditDTO.setReceiver(savedBankAccount);
+//        creditDTO.setPaymentStatus(PaymentStatus.Successful);
+//        creditDTO.setTransactionalType(TransactionalType.Sale);
+//        creditDTO.setInvoice(null);
+//
+//        CreditDTO saveCredit = transactionService.saveCredit(creditDTO);
+//
+//        List<CreditBillingToPayDTO> creditBillingToPayDTOS = new ArrayList<>();
+//
+//        CreditBillingToPayDTO creditBillingToPayDTO = new CreditBillingToPayDTO(null,saveCredit,savedBillingToPay);
+//        creditBillingToPayDTOS.add(creditBillingToPayDTO);
+//
+//        CreditBillingToPayDTO creditBillingToPayDTO1 = new CreditBillingToPayDTO(null,saveCredit,savedBillingToPay1);
+//        creditBillingToPayDTOS.add(creditBillingToPayDTO1);
+//
+//        saveCredit.setCreditBillingToPays(creditBillingToPayDTOS);
+//        //CreditDTO savedCredit1 = transactionService.saveCredit(saveCredit);
+//        // TODO create Service for Credit Billing to Pay
+//        //////
+//
+//        BillingToReceiveDTO billingToReceiveDTO = new BillingToReceiveDTO(new BigDecimal(100),PaymentStatus.Successful,savedUser1,TransactionalType.Sale);
+//        BillingToReceiveDTO billingToReceiveDTO1 = new BillingToReceiveDTO(new BigDecimal(200), PaymentStatus.Successful,savedUser1,TransactionalType.Sale);
+//        BillingToReceiveDTO savedBillingToReceiveDTO = billingToReceiveService.save(billingToReceiveDTO);
+//        BillingToReceiveDTO savedBillingToReceiveDTO2 = billingToReceiveService.save(billingToReceiveDTO1);
+//
+//        DebitDTO debitDTO = new DebitDTO();
+//        debitDTO.setAmount(new BigDecimal(300));
+//        debitDTO.setInvoice(null);
+//        debitDTO.setSender(savedBankAccount);
+//        debitDTO.setReceiver(savedBankAccountUir);
+//        debitDTO.setPaymentStatus(PaymentStatus.Successful);
+//        debitDTO.setTransactionalType(TransactionalType.Sale);
+//
+//        DebitDTO savedDebitDTO = transactionService.saveDebit(debitDTO);
+//
+//        List<DebitBillingToReceiveDTO> debitBillingToReceiveDTOS=new ArrayList<>();
+//        DebitBillingToReceiveDTO debitBillingToReceiveDTO = new DebitBillingToReceiveDTO(null,savedDebitDTO,savedBillingToReceiveDTO);
+//        DebitBillingToReceiveDTO debitBillingToReceiveDTO1 = new DebitBillingToReceiveDTO(null,savedDebitDTO,savedBillingToReceiveDTO2);
+//        debitBillingToReceiveDTOS.add(debitBillingToReceiveDTO);
+//        debitBillingToReceiveDTOS.add(debitBillingToReceiveDTO1);
+//
+//        savedDebitDTO.setDebitBillingToReceiveDTOS(debitBillingToReceiveDTOS);
+//
+//        //DebitDTO saveDebitDTO1 = transactionService.saveDebit(savedDebitDTO);
+//
+//        // TODO create Service for Credit Billing to Pay
 
 
     }

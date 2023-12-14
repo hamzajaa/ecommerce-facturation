@@ -4,7 +4,10 @@ import com.ecommerce.facturation.Enum.InvoiceStatus;
 import com.ecommerce.facturation.Enum.PaymentMethod;
 import com.ecommerce.facturation.bean.Invoice;
 import com.ecommerce.facturation.dao.InvoiceDao;
-import com.ecommerce.facturation.dto.*;
+import com.ecommerce.facturation.dto.ClientDTO;
+import com.ecommerce.facturation.dto.CommandItemDto;
+import com.ecommerce.facturation.dto.InvoiceDTO;
+import com.ecommerce.facturation.dto.OrderDto;
 import com.ecommerce.facturation.mapper.InvoiceMapper;
 import com.ecommerce.facturation.mapper.JsonMapper;
 import com.ecommerce.facturation.service.facade.InvoiceService;
@@ -20,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,7 +80,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     //    @Async
     @Override
     @Transactional
-    public InvoiceDTO setDataToInvoice(String payload) {
+    public void setDataToInvoice(String payload) {
         long startDate = System.currentTimeMillis();
         OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
         ClientDTO clientDTO = jsonMapper.convertJsonToObject(orderDto.client(), ClientDTO.class);
@@ -99,21 +101,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         long endDate = System.currentTimeMillis();
         log.info("Total time {} {}", invoiceDTO.invoiceId(), (endDate - startDate) + "ms");
 //        return CompletableFuture.completedFuture(invoiceDTO);
-        return invoiceDTO;
     }
 
-    @Override
-    public CompletableFuture<InvoiceDTO> setDataToInvoiceUpdate(String payload) {
-        long startDate = System.currentTimeMillis();
-        OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
-        Invoice foundedInvoice = findByOrderReference(orderDto.reference());
-        foundedInvoice.setInvoiceStatus(InvoiceStatus.PAID);
-        InvoiceDTO invoiceDTO = invoiceMapper.fromInvoice(foundedInvoice);
-        update(invoiceDTO);
-        long endDate = System.currentTimeMillis();
-        log.info("Total time {}  {}", invoiceDTO.invoiceId(), (endDate - startDate) + "ms");
-        return null;
-    }
 
     @Override
     public Invoice findByOrderReference(String reference) {

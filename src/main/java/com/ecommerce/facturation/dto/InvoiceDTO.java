@@ -99,7 +99,8 @@ public record InvoiceDTO(
                 clientNumberPhone,
                 commandeItemDtos,
                 null,
-                null);
+                null
+        );
     }
 
 }

@@ -1,6 +1,5 @@
 package com.ecommerce.facturation.ws;
 
-import com.ecommerce.facturation.bean.BankAccount;
 import com.ecommerce.facturation.dto.BankAccountDTO;
 import com.ecommerce.facturation.exception.BankAccountNotFoundException;
 import com.ecommerce.facturation.service.impl.BankAccountServiceImpl;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/BankAccounts")
@@ -25,7 +23,7 @@ public class BankAccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BankAccountDTO> findBankAccountById(@PathVariable Long id) throws BankAccountNotFoundException {
+    public ResponseEntity<BankAccountDTO> findBankAccountById(@PathVariable Long id)  {
         return ResponseEntity.ok(bankAccountService.findById(id));
     }
 
@@ -40,7 +38,7 @@ public class BankAccountController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<CompletableFuture<BankAccountDTO>> saveBankAccount(@Valid @RequestBody BankAccountDTO bankAccountDTO) {
+    public ResponseEntity<BankAccountDTO> saveBankAccount(@Valid @RequestBody BankAccountDTO bankAccountDTO) {
         return new ResponseEntity<>(bankAccountService.save(bankAccountDTO), HttpStatus.CREATED);
     }
 }
