@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DebitBillingToReceive extends AbstractSupperClass {
+
     @ManyToOne
     private Debit debit;
     @OneToOne

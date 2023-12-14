@@ -152,6 +152,26 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>2.0.3</version>
+                <executions>
+                    <execution>
+                        <id>jmeter-test</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jmeter</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jmeterExtensions>
+                        <artifact>org.apache.activemq:activemq-all:jar:${activemq.version}</artifact>
+                    </jmeterExtensions>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

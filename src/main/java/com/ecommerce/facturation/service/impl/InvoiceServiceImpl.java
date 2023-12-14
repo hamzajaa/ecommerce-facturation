@@ -15,7 +15,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -57,7 +56,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    @Transactional
+//    @Async
     public InvoiceDTO save(InvoiceDTO invoiceDTO) {
         log.info("Saving a new invoice.");
         Invoice invoice = invoiceMapper.fromInvoiceDto(invoiceDTO);
@@ -68,7 +67,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 //        }
         try {
             generateInvoicePdf.generate(savedInvoice);
-            log.info("PDF Invoice generate successfully. ID {}", savedInvoice.getId());
         } catch (FileNotFoundException e) {
             log.error("Error generating PDF for invoice ID: {}", savedInvoice.getId(), e);
             throw new RuntimeException(e);
@@ -77,38 +75,84 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceMapper.fromInvoice(savedInvoice);
     }
 
-    @Async
-    public CompletableFuture<InvoiceDTO> setDataToInvoice(String payload) {
+    //    @Async
+    @Override
+    @Transactional
+    public InvoiceDTO setDataToInvoice(String payload) {
         long startDate = System.currentTimeMillis();
         OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
         ClientDTO clientDTO = jsonMapper.convertJsonToObject(orderDto.client(), ClientDTO.class);
         List<CommandItemDto> commandItemDtos = jsonMapper.convertJsonToObjects(orderDto.commandItemDtos(), CommandItemDto.class);
         InvoiceDTO invoiceDTO = new InvoiceDTO(
                 orderDto.reference(),
+                orderDto.orderId(),
                 LocalDateTime.now().plusDays(30),
-                orderDto.paymentMethod() == 0 ? InvoiceStatus.PENDING : InvoiceStatus.PAID,
-                orderDto.paymentMethod() == 0 ? PaymentMethod.ON_DELIVERY : PaymentMethod.ONLINE,
+                orderDto.paymentStatus().equals("EN_ATTENTE") ? InvoiceStatus.PENDING : InvoiceStatus.PAID,
+                orderDto.paymentMethod().equals("A_LA_LIVRAISON") ? PaymentMethod.ON_DELIVERY : PaymentMethod.ONLINE,
                 orderDto.totalPay(),
                 clientDTO.fullName(),
                 clientDTO.address(),
-                clientDTO.phoneNumber(),
                 clientDTO.email(),
-                commandItemDtos
-        );
+                clientDTO.phoneNumber(),
+                commandItemDtos);
         save(invoiceDTO);
         long endDate = System.currentTimeMillis();
-        log.info("Total time {}  {}", invoiceDTO.invoiceId(), (endDate - startDate) + "ms");
-        return CompletableFuture.completedFuture(invoiceDTO);
+        log.info("Total time {} {}", invoiceDTO.invoiceId(), (endDate - startDate) + "ms");
+//        return CompletableFuture.completedFuture(invoiceDTO);
+        return invoiceDTO;
     }
-
 
     @Override
+    public CompletableFuture<InvoiceDTO> setDataToInvoiceUpdate(String payload) {
+        long startDate = System.currentTimeMillis();
+        OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
+        Invoice foundedInvoice = findByOrderReference(orderDto.reference());
+        foundedInvoice.setInvoiceStatus(InvoiceStatus.PAID);
+        InvoiceDTO invoiceDTO = invoiceMapper.fromInvoice(foundedInvoice);
+        update(invoiceDTO);
+        long endDate = System.currentTimeMillis();
+        log.info("Total time {}  {}", invoiceDTO.invoiceId(), (endDate - startDate) + "ms");
+        return null;
+    }
+
+    @Override
+    public Invoice findByOrderReference(String reference) {
+        return invoiceDao.findByOrderReference(reference);
+    }
+
+    @Override
+    @Transactional
+    public void setDataToInvoiceAndUpdate(String payload) {
+        OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
+        Invoice foundedInvoice = findByOrderId(orderDto.orderId());
+        if (orderDto.paymentStatus().equals("PAYE")) {
+            foundedInvoice.setInvoiceStatus(InvoiceStatus.PAID);
+        }
+        update(invoiceMapper.fromInvoice(foundedInvoice));
+
+    }
+
+    @Override
+    public Invoice findByOrderId(Long id) {
+        return invoiceDao.findByOrderId(id).orElseThrow(() -> new EntityNotFoundException("Invoice not found with orderId: " + id));
+    }
+
+    @Override
+    @Transactional
     public InvoiceDTO update(InvoiceDTO invoiceDTO) {
-        findById(invoiceDTO.invoiceId());
         Invoice invoice = invoiceMapper.fromInvoiceDto(invoiceDTO);
         Invoice updatedInvoice = invoiceDao.save(invoice);
+        try {
+            generateInvoicePdf.generateUpdate(updatedInvoice);
+            log.info("PDF Invoice generate successfully. ID {}", updatedInvoice.getId());
+        } catch (FileNotFoundException e) {
+            log.error("Error generating PDF for invoice ID: {}", updatedInvoice.getId(), e);
+            throw new RuntimeException(e);
+        }
+        sendEmailToClient.send(invoice);
         return invoiceMapper.fromInvoice(updatedInvoice);
     }
+
 
     @Override
     public boolean deleteInvoiceById(Long id) {

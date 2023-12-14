@@ -37,6 +37,8 @@ public record UserDTO(
         @NotNull(message = "Role cannot be null")
         Role role
 ) {
-
+    public UserDTO(String fullName, String email, String address, String phoneNumber, Role role) {
+        this(null, fullName, email, address, phoneNumber, role);
+    }
 
 }

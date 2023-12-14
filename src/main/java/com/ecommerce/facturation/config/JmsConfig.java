@@ -31,7 +31,7 @@ public class JmsConfig {
     public ConnectionFactory connectionFactory() throws JMSException {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
         connectionFactory.setBrokerURL(brokerUrl);
-        connectionFactory.setMaxThreadPoolSize(4);
+        connectionFactory.setMaxThreadPoolSize(1000);
         return connectionFactory;
     }
 
@@ -62,7 +62,17 @@ public class JmsConfig {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setSessionAcknowledgeMode(Session.AUTO_ACKNOWLEDGE);
-        factory.setClientId("facturation_id3");
+        factory.setClientId("facturation_id88");
+        return factory;
+    }
+
+    @Bean
+    public JmsListenerContainerFactory<?> jmsListenerTopicContainerFactory(ConnectionFactory connectionFactory) {
+        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setPubSubDomain(true);
+        factory.setSessionAcknowledgeMode(Session.AUTO_ACKNOWLEDGE);
+        factory.setClientId("facturation_id88"+"topic");
         return factory;
     }
 }

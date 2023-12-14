@@ -13,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 
 import java.math.BigDecimal;
+import java.util.concurrent.CompletableFuture;
 
 @SpringBootApplication
+@EnableJpaAuditing
 public class EcommerceFacturationApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
@@ -44,8 +47,8 @@ public class EcommerceFacturationApplication implements CommandLineRunner {
         if (userService.findByEmail(userDTO.email()) == null) {
             savedUser = userService.save(userDTO);
             BankAccountDTO bankAccountDTO = new BankAccountDTO("rib1", Bank.WAFABANK, savedUser);
-            BankAccountDTO savedBankAccount = bankAccountService.save(bankAccountDTO);
-            BankAccountBalanceDTO bankAccountBalanceDTO = new BankAccountBalanceDTO(savedBankAccount, BigDecimal.ZERO);
+            CompletableFuture<BankAccountDTO> savedBankAccount = bankAccountService.save(bankAccountDTO);
+            BankAccountBalanceDTO bankAccountBalanceDTO = new BankAccountBalanceDTO(savedBankAccount.join(), BigDecimal.ZERO);
             bankAccountBalanceService.save(bankAccountBalanceDTO);
         }
     }

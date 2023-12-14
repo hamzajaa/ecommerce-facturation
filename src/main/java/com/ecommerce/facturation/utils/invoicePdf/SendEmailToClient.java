@@ -10,7 +10,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -35,32 +34,36 @@ public class SendEmailToClient {
     @Value("${spring.user.pdf}")
     String resourcePath;
 
+//    @Async
     public void send(Invoice invoice) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                //            Thread.sleep(10000);
-                MimeMessage message = getMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-                helper.setPriority(1);
-                helper.setSubject("Invoice for Your Recent Order - Order #" + invoice.getOrderReference());
-                helper.setFrom(fromEmail);
-                helper.setTo(invoice.getClientEmail());
-                helper.setText("Please find attached the invoice for your recent order. The invoice contains all the necessary details, including the order number, date, due date, and total amount.\n");
-                // Add attachments
-                FileSystemResource pdf = new FileSystemResource(new File("pdf/" + invoice.getInvoiceNumber() + ".pdf"));
-                //            helper.addInline(getContentId(pdf.getFilename()), pdf);
-                helper.addAttachment("Invoice.pdf", pdf);
+        long startDate = System.currentTimeMillis();
 
-                emailSender.send(message);
-                log.info("PDF Invoice send it successfully. ID {}", invoice.getId());
+        try {
+            //            Thread.sleep(10000);
+            MimeMessage message = getMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setPriority(1);
+            helper.setSubject("Invoice for Your Recent Order - Order #" + invoice.getOrderReference());
+            helper.setFrom(fromEmail);
+            helper.setTo(invoice.getClientEmail());
+            helper.setText("Please find attached the invoice for your recent order. The invoice contains all the necessary details, including the order number, date, due date, and total amount.\n");
+            // Add attachments
+            FileSystemResource pdf = new FileSystemResource(new File("pdf/" + invoice.getInvoiceNumber() + ".pdf"));
+            //            helper.addInline(getContentId(pdf.getFilename()), pdf);
+            helper.addAttachment("Invoice.pdf", pdf);
 
-                // Remove the PDF file after sending the email
-                removePdfFile(invoice.getInvoiceNumber());
+            emailSender.send(message);
+            log.info("PDF Invoice send it successfully. ID {}", invoice.getId());
 
-            } catch (MessagingException e) {
-                log.error("Error sending pdf Invoice: " + e.getMessage());
-            }
-        });
+            // Remove the PDF file after sending the email
+            removePdfFile(invoice.getInvoiceNumber());
+
+        } catch (MessagingException e) {
+            log.error("Error sending pdf Invoice: " + e.getMessage());
+        }
+        long endDate = System.currentTimeMillis();
+        log.info("Total time sendEmail {} {}", invoice.getId(), (endDate - startDate) + "ms");
+
     }
 
     private MimeMessage getMimeMessage() {

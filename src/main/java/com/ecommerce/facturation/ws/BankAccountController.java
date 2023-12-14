@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/BankAccounts")
@@ -19,23 +20,27 @@ public class BankAccountController {
     public BankAccountServiceImpl bankAccountService;
 
     @GetMapping("/")
-    public ResponseEntity<List<BankAccountDTO>> findAll(){
+    public ResponseEntity<List<BankAccountDTO>> findAll() {
         return ResponseEntity.ok(bankAccountService.getBankAccounts());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<BankAccountDTO> findBankAccountById(@PathVariable Long id) throws BankAccountNotFoundException {
         return ResponseEntity.ok(bankAccountService.findById(id));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteBankAccountById(@PathVariable Long id) throws BankAccountNotFoundException {
         return ResponseEntity.ok(bankAccountService.deleteBankAccountById(id));
     }
+
     @PutMapping("/")
-    public ResponseEntity<BankAccountDTO> updateBankAccount(@Valid @RequestBody BankAccountDTO bankAccountDTO){
+    public ResponseEntity<BankAccountDTO> updateBankAccount(@Valid @RequestBody BankAccountDTO bankAccountDTO) {
         return ResponseEntity.ok(bankAccountService.update(bankAccountDTO));
     }
+
     @PostMapping("/")
-    public ResponseEntity<BankAccountDTO> saveBankAccount(@Valid @RequestBody BankAccountDTO bankAccountDTO){
+    public ResponseEntity<CompletableFuture<BankAccountDTO>> saveBankAccount(@Valid @RequestBody BankAccountDTO bankAccountDTO) {
         return new ResponseEntity<>(bankAccountService.save(bankAccountDTO), HttpStatus.CREATED);
     }
 }

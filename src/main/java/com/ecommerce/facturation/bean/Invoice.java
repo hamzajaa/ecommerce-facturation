@@ -25,6 +25,8 @@ public class Invoice extends AbstractSupperClass {
 
     private String orderReference;
 
+    private Long orderId;
+
     private String invoiceNumber;
 
     private LocalDateTime dueDate;
@@ -41,9 +43,9 @@ public class Invoice extends AbstractSupperClass {
 
     private String clientAddress;
 
-    private String clientNumberPhone;
-
     private String clientEmail;
+
+    private String clientNumberPhone;
 
     @Column(length = 100_000)
     private String products;

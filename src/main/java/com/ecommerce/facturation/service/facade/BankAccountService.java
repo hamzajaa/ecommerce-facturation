@@ -1,17 +1,17 @@
 package com.ecommerce.facturation.service.facade;
 
-import com.ecommerce.facturation.bean.BankAccount;
 import com.ecommerce.facturation.dto.BankAccountDTO;
 import com.ecommerce.facturation.exception.BankAccountNotFoundException;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface BankAccountService {
     List<BankAccountDTO> getBankAccounts();
 
     BankAccountDTO findById(Long id) throws BankAccountNotFoundException;
 
-    BankAccountDTO save(BankAccountDTO bankAccountDTO);
+    CompletableFuture<BankAccountDTO> save(BankAccountDTO bankAccountDTO);
 
     BankAccountDTO update(BankAccountDTO bankAccountDTO);
 
@@ -19,5 +19,6 @@ public interface BankAccountService {
 
     BankAccountDTO findByUserEmail(String email);
 
-    BankAccountDTO setDataToBankAccount(String payload);
+    CompletableFuture<BankAccountDTO> setDataProviderToBankAccount(String payload);
+    CompletableFuture<BankAccountDTO> setDataDeliveryManToBankAccount(String payload);
 }

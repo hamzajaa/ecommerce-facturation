@@ -1,11 +1,12 @@
 package com.ecommerce.facturation.service.impl;
 
 import com.ecommerce.facturation.Enum.Bank;
+import com.ecommerce.facturation.Enum.Role;
 import com.ecommerce.facturation.bean.BankAccount;
-import com.ecommerce.facturation.bean.User;
 import com.ecommerce.facturation.dao.BankAccountDao;
-import com.ecommerce.facturation.dao.UserDao;
 import com.ecommerce.facturation.dto.BankAccountDTO;
+import com.ecommerce.facturation.dto.DeliveryManDto;
+import com.ecommerce.facturation.dto.ProviderDto;
 import com.ecommerce.facturation.dto.UserDTO;
 import com.ecommerce.facturation.exception.BankAccountNotFoundException;
 import com.ecommerce.facturation.mapper.BankAccountMapper;
@@ -15,11 +16,11 @@ import com.ecommerce.facturation.service.facade.BankAccountService;
 import com.ecommerce.facturation.service.facade.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,13 +48,14 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public BankAccountDTO save(BankAccountDTO bankAccountDTO) throws EntityNotFoundException {
+    @Async
+    public CompletableFuture<BankAccountDTO> save(BankAccountDTO bankAccountDTO) throws EntityNotFoundException {
         Long userId = bankAccountDTO.userDto().id();
         UserDTO foundedUser = userService.findById(userId);
         BankAccount bankAccount = bankAccountMapper.toEntity(bankAccountDTO);
         bankAccount.setUser(userMapper.toEntity(foundedUser));
         BankAccount newBankAccount = bankAccountDao.save(bankAccount);
-        return bankAccountMapper.toDto(newBankAccount);
+        return CompletableFuture.completedFuture(bankAccountMapper.toDto(newBankAccount));
     }
 
 
@@ -83,15 +85,44 @@ public class BankAccountServiceImpl implements BankAccountService {
     private JsonMapper jsonMapper;
 
     @Override
-    public BankAccountDTO setDataToBankAccount(String payload) {
-        UserDTO userDTO = jsonMapper.convertJsonToObject(payload, UserDTO.class);
-
+    @Async
+    public CompletableFuture<BankAccountDTO> setDataProviderToBankAccount(String payload) {
+        ProviderDto providerDto = jsonMapper.convertJsonToObject(payload, ProviderDto.class);
+        UserDTO userDTO = new UserDTO(
+                providerDto.fullName(),
+                providerDto.email(),
+                null,
+                null,
+                Role.PROVIDER
+        );
+        UserDTO savedUser = userService.save(userDTO);
         BankAccountDTO bankAccountDTO = new BankAccountDTO(
-                UUID.randomUUID().toString(),
+                providerDto.rib(),
                 Bank.CIHBANK,
-                userDTO
+                savedUser
         );
         save(bankAccountDTO);
-        return bankAccountDTO;
+        return CompletableFuture.completedFuture(bankAccountDTO);
+    }
+
+    @Override
+    @Async
+    public CompletableFuture<BankAccountDTO> setDataDeliveryManToBankAccount(String payload) {
+        DeliveryManDto deliveryManDto = jsonMapper.convertJsonToObject(payload, DeliveryManDto.class);
+        UserDTO userDTO = new UserDTO(
+                deliveryManDto.fullName(),
+                deliveryManDto.email(),
+                null,
+                deliveryManDto.phoneNumber(),
+                Role.DELIVERY
+        );
+        UserDTO savedUser = userService.save(userDTO);
+        BankAccountDTO bankAccountDTO = new BankAccountDTO(
+                deliveryManDto.rib(),
+                Bank.CIHBANK,
+                savedUser
+        );
+        save(bankAccountDTO);
+        return CompletableFuture.completedFuture(bankAccountDTO);
     }
 }

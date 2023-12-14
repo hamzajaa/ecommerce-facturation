@@ -27,12 +27,12 @@ public class MessageConsumer {
 //    static ThreadFactory invoiceThreadFactory = (r) -> new Thread(r, "Invoice-" + invoiceThreadIndex++);
 
     @Async
-    @JmsListener(destination = "commandeBilling2", containerFactory = "jmsListenerContainerFactory", concurrency = "6")
+    @JmsListener(destination = "commandeBilling2", containerFactory = "jmsListenerContainerFactory", concurrency = "1000")
     public void receiveMessage(Message<String> orderDto) {
         System.out.println("Current Thread in receiveMessage: " + Thread.currentThread());
         System.out.println("Message reçu du topic : " + orderDto);
         String payload = orderDto.getPayload();
-        invoiceService.setDataToInvoice(payload).join();
+        invoiceService.setDataToInvoice(payload);
 
 //        Supplier<InvoiceDTO> saveInvoice =
 //                () -> {
@@ -51,6 +51,14 @@ public class MessageConsumer {
 //        CompletableFuture.supplyAsync(saveInvoice, invoiceExecutorService);
 
 
+    }
+
+    //    @JmsListener(destination = "commandeBillingCOD", containerFactory = "jmsListenerContainerFactory", concurrency = "6")
+    public void receiveMessageOrderPaid(Message<String> orderDto) {
+        System.out.println("Current Thread in receiveMessage: " + Thread.currentThread());
+        System.out.println("Message reçu du topic : " + orderDto);
+        String payload = orderDto.getPayload();
+        invoiceService.setDataToInvoiceUpdate(payload).join();
     }
 
 

@@ -29,16 +29,20 @@ public class InvoiceMapper {
         Invoice invoice = new Invoice();
         invoice.setId(invoiceDTO.invoiceId());
         invoice.setOrderReference(invoiceDTO.orderReference());
+        invoice.setOrderId(invoiceDTO.orderId());
+        invoice.setInvoiceNumber(invoiceDTO.invoiceNumber());
         invoice.setDueDate(invoiceDTO.dueDate());
         invoice.setInvoiceStatus(invoiceDTO.invoiceStatus());
         invoice.setPaymentMethod(invoiceDTO.paymentMethod());
         invoice.setTotalPay(invoiceDTO.totalPay());
         invoice.setClientName(invoiceDTO.clientName());
         invoice.setClientAddress(invoiceDTO.clientAddress());
-        invoice.setClientNumberPhone(invoiceDTO.clientNumberPhone());
         invoice.setClientEmail(invoiceDTO.clientEmail());
+        invoice.setClientNumberPhone(invoiceDTO.clientNumberPhone());
         String products = jsonMapper.convertObjectToJson(invoiceDTO.commandeItemDtos());
         invoice.setProducts(products);
+        invoice.setCreatedAt(invoiceDTO.createAt());
+        invoice.setUpdatedAt(invoiceDTO.updateAt());
 
         return invoice;
     }
@@ -49,15 +53,19 @@ public class InvoiceMapper {
         InvoiceDTO invoiceDTO = new InvoiceDTO(
                 invoice.getId(),
                 invoice.getOrderReference(),
+                invoice.getOrderId(),
+                invoice.getInvoiceNumber(),
                 invoice.getDueDate(),
                 invoice.getInvoiceStatus(),
                 invoice.getPaymentMethod(),
                 invoice.getTotalPay(),
                 invoice.getClientName(),
-                invoice.getClientEmail(),
                 invoice.getClientAddress(),
+                invoice.getClientEmail(),
                 invoice.getClientNumberPhone(),
-                products
+                products,
+                invoice.getCreatedAt(),
+                invoice.getUpdatedAt()
         );
 
         return invoiceDTO;

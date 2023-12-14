@@ -17,6 +17,11 @@ public record InvoiceDTO(
         Long invoiceId,
         @NotBlank(message = "Order reference cannot be blank")
         String orderReference,
+
+        Long orderId,
+
+        String invoiceNumber,
+
         @Future(message = "Due date must be in the future")
         LocalDateTime dueDate,
         InvoiceStatus invoiceStatus,
@@ -28,34 +33,73 @@ public record InvoiceDTO(
 //        ClientDTO clientDTO,
         String clientName,
         String clientAddress,
-        String clientNumberPhone,
         String clientEmail,
+        String clientNumberPhone,
         @Valid
         @JsonProperty("products")
-        List<CommandItemDto> commandeItemDtos
+        List<CommandItemDto> commandeItemDtos,
+        LocalDateTime createAt,
+        LocalDateTime updateAt
+
 
 ) {
     public InvoiceDTO(String orderReference,
+                      Long orderId,
                       LocalDateTime dueDate,
+                      String invoiceNumber,
                       InvoiceStatus invoiceStatus,
                       PaymentMethod paymentMethod,
                       BigDecimal totalPay,
                       String clientName,
                       String clientAddress,
-                      String clientNumberPhone,
                       String clientEmail,
-                      List<CommandItemDto> commandeItemDtos) {
+                      String clientNumberPhone,
+                      List<CommandItemDto> commandeItemDtos,
+                      LocalDateTime createAt,
+                      LocalDateTime updateAt) {
         this(null,
                 orderReference,
+                orderId,
+                invoiceNumber,
                 dueDate,
                 invoiceStatus,
                 paymentMethod,
                 totalPay,
                 clientName,
                 clientAddress,
-                clientNumberPhone,
                 clientEmail,
-                commandeItemDtos);
+                clientNumberPhone,
+                commandeItemDtos,
+                createAt,
+                updateAt);
+    }
+
+    public InvoiceDTO(String orderReference,
+                      Long orderId,
+                      LocalDateTime dueDate,
+                      InvoiceStatus invoiceStatus,
+                      PaymentMethod paymentMethod,
+                      BigDecimal totalPay,
+                      String clientName,
+                      String clientAddress,
+                      String clientEmail,
+                      String clientNumberPhone,
+                      List<CommandItemDto> commandeItemDtos) {
+        this(null,
+                orderReference,
+                orderId,
+                null,
+                dueDate,
+                invoiceStatus,
+                paymentMethod,
+                totalPay,
+                clientName,
+                clientAddress,
+                clientEmail,
+                clientNumberPhone,
+                commandeItemDtos,
+                null,
+                null);
     }
 
 }
