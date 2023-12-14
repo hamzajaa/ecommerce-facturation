@@ -4,11 +4,13 @@ import com.ecommerce.facturation.bean.BillingToPay;
 import com.ecommerce.facturation.bean.BillingToReceive;
 import com.ecommerce.facturation.dto.BillingToPayDTO;
 import com.ecommerce.facturation.dto.BillingToReceiveDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BillingToReceiveMapper extends AbstractMapper<BillingToReceive,BillingToReceiveDTO>{
-
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public BillingToReceive toEntity(BillingToReceiveDTO billingToReceiveDTO) {
@@ -16,7 +18,7 @@ public class BillingToReceiveMapper extends AbstractMapper<BillingToReceive,Bill
         billingToReceive.setAmount(billingToReceiveDTO.amount());
         billingToReceive.setPaymentStatus(billingToReceiveDTO.paymentStatus());
         billingToReceive.setReason(billingToReceiveDTO.transactionalType());
-        //  billingToPay.setUser(billingToPayDTO.getUser());
+        billingToReceive.setUser(userMapper.toEntity(billingToReceiveDTO.userDTO()));
         return billingToReceive;
     }
 
@@ -25,7 +27,7 @@ public class BillingToReceiveMapper extends AbstractMapper<BillingToReceive,Bill
         BillingToReceiveDTO billingToReceiveDTO = new BillingToReceiveDTO(
                 billingToReceive.getAmount(),
                 billingToReceive.getPaymentStatus(),
-                null,
+                userMapper.toDto(billingToReceive.getUser()),
                 billingToReceive.getReason()
         );
 

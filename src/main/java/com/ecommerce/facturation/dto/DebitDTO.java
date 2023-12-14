@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DebitDTO extends TransactionDTO {
     @Valid
-    List<DebitBillingToReceive> debitBillingToReceiveDTOS;
+    List<DebitBillingToReceiveDTO> debitBillingToReceiveDTOS;
 
     public DebitDTO(@NotNull(message = "Full name cannot be null") @DecimalMin(value = "0.0", inclusive = false, message = "Amount must be greater than 0") BigDecimal amount, @Valid BankAccountDTO sender, @Valid BankAccountDTO receiver, PaymentStatus paymentStatus, TransactionalType transactionalType, @Valid InvoiceDTO invoice, List<DebitBillingToReceive> debitBillingToReceiveDTOS) {
         super(null, amount, sender, receiver, paymentStatus, transactionalType, invoice);

@@ -8,60 +8,54 @@ import com.ecommerce.facturation.dto.BillingToPayDTO;
 import com.ecommerce.facturation.exception.BillingNotFoundException;
 import com.ecommerce.facturation.exception.ExceptionMessage;
 import com.ecommerce.facturation.mapper.BillingToPayMapper;
+import com.ecommerce.facturation.mapper.UserMapper;
 import com.ecommerce.facturation.service.facade.BillingToPayService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+@Service
 public class BellingToPayServiceImpl implements BillingToPayService {
-
+    @Autowired
     private  BillingToPayRepo billingToPayRepo;
-
-    private UserDao userDao;
-
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
     private BillingToPayMapper billingToPayMapper;
     @Override
     public List<BillingToPayDTO> getBillingToPays() {
-
-        return billingToPayRepo.findAll().stream().map(billingToPayMapper::toDto).collect(Collectors.toList());
+        return billingToPayMapper.toDto(billingToPayRepo.findAll());
     }
 
     @Override
     public BillingToPayDTO findById(Long id) {
-
-        //we don t have no id here to find by
-        BillingToPay billingToPay = billingToPayRepo.findById(id).orElseThrow(()-> new BillingNotFoundException());
+        BillingToPay billingToPay = billingToPayRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("Billing To Pay not fount with id : "+id));
         return billingToPayMapper.toDto(billingToPay);
     }
 
     @Override
     public BillingToPayDTO save(BillingToPayDTO billingToPayDTO) {
-
        BillingToPay billingToPay =  billingToPayMapper.toEntity(billingToPayDTO);
         return  billingToPayMapper.toDto(billingToPayRepo.save(billingToPay));
     }
 
     @Override
-    public BillingToPayDTO update(BillingToPayDTO billingToPayDTO) {
-
-         BillingToPay billingToPay =  billingToPayRepo.findById(0L).get() ;
-
-        // billingToPay.setUser(billingToPayDTO.userDTO()); need mapper user ;
-         billingToPay.setAmount(billingToPayDTO.amount());
-         billingToPay.setReason(billingToPayDTO.transactionalType());
-         billingToPay.setPaymentStatus(billingToPayDTO.paymentStatus());
-
+    public BillingToPayDTO update(BillingToPayDTO billingToPayDTO,Long id) {
+        BillingToPay billingToPay =  billingToPayRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Billing To Pay not fount with id : "+id)) ;
         return  billingToPayMapper.toDto(billingToPayRepo.save(billingToPay));
     }
 
     @Override
     public boolean deleteBillingToPayById(Long id) {
+        billingToPayRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Billing To Pay not fount with id : "+id)) ;
         billingToPayRepo.deleteById(id);
         return  findById(id) != null ? false : true;
     }

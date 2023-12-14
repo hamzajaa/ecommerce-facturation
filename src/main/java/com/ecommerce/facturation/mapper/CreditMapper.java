@@ -1,34 +1,51 @@
 package com.ecommerce.facturation.mapper;
 
 import com.ecommerce.facturation.bean.Credit;
+import com.ecommerce.facturation.bean.association.CreditBillingToPay;
 import com.ecommerce.facturation.dto.CreditDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
-public class CreditMapper {
-    public Credit fromCreditDTO(CreditDTO creditDTO){
+public class CreditMapper extends AbstractMapper<Credit,CreditDTO>{
+    @Autowired
+    private BankAccountMapper bankAccountMapper;
+    @Autowired
+    private InvoiceMapper invoiceMapper;
+    @Autowired
+    private CreditBillingToPayMapper creditBillingToPayMapper;
+
+    @Override
+    public Credit toEntity(CreditDTO creditDTO) {
         Credit credit = new Credit();
         credit.setId(creditDTO.getId());
         credit.setAmount(creditDTO.getAmount());
-        //credit.setReceiver();
-        //credit.setSender();
-        //credit.setBillingsToPay();
+        credit.setReceiver(bankAccountMapper.toEntity(creditDTO.getReceiver()));
+        credit.setSender(bankAccountMapper.toEntity(creditDTO.getSender()));
+
+        credit.setBillingsToPay(creditBillingToPayMapper.toEntity(creditDTO.getCreditBillingToPays()));
         credit.setPaymentStatus(creditDTO.getPaymentStatus());
         credit.setTransactionalType(creditDTO.getTransactionalType());
-        //credit.setInvoice();
+        credit.setInvoice(invoiceMapper.fromInvoiceDto(creditDTO.getInvoice()));
         return credit;
     }
 
-    public CreditDTO fromCredit(Credit credit){
+    @Override
+    public CreditDTO toDto(Credit credit) {
         CreditDTO creditDTO = new CreditDTO();
-        creditDTO.setId(creditDTO.getId());
-        creditDTO.setAmount(creditDTO.getAmount());
-        //creditDTO.setCreditBillingToPays();
-        //creditDTO.setSender();
-        //creditDTO.setReceiver();
+        creditDTO.setId(credit.getId());
+        creditDTO.setAmount(credit.getAmount());
+        creditBillingToPayMapper.init(true);
+        creditBillingToPayMapper.setBillingsToPay(false);
+        creditDTO.setCreditBillingToPays(creditBillingToPayMapper.toDto(credit.getBillingsToPay()));
+        creditBillingToPayMapper.setBillingsToPay(true);
+        creditDTO.setSender(bankAccountMapper.toDto(credit.getSender()));
+        creditDTO.setReceiver(bankAccountMapper.toDto(credit.getReceiver()));
         creditDTO.setPaymentStatus(credit.getPaymentStatus());
         creditDTO.setTransactionalType(credit.getTransactionalType());
-        //creditDTO.setInvoice(credit.getInvoice());
+        creditDTO.setInvoice(invoiceMapper.fromInvoice(credit.getInvoice()));
         return creditDTO;
     }
 }

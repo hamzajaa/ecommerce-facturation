@@ -3,15 +3,18 @@ package com.ecommerce.facturation.mapper;
 import com.ecommerce.facturation.Enum.PaymentStatus;
 import com.ecommerce.facturation.Enum.TransactionalType;
 import com.ecommerce.facturation.bean.BillingToPay;
+import com.ecommerce.facturation.bean.User;
 import com.ecommerce.facturation.dto.BillingToPayDTO;
 import com.ecommerce.facturation.dto.UserDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Component
 public class BillingToPayMapper  extends AbstractMapper<BillingToPay,BillingToPayDTO>{
-
+    @Autowired
+    private UserMapper userMapper;
 
 
     @Override
@@ -20,8 +23,7 @@ public class BillingToPayMapper  extends AbstractMapper<BillingToPay,BillingToPa
         billingToPay.setAmount(billingToPayDTO.amount());
         billingToPay.setPaymentStatus(billingToPay.getPaymentStatus());
         billingToPay.setReason(billingToPayDTO.transactionalType());
-        //  billingToPay.setUser(billingToPayDTO.getUser());
-
+        billingToPay.setUser(userMapper.toEntity(billingToPayDTO.userDTO()));
         return billingToPay;
     }
 
@@ -31,7 +33,7 @@ public class BillingToPayMapper  extends AbstractMapper<BillingToPay,BillingToPa
         BillingToPayDTO billingToPayDTO = new BillingToPayDTO(
                 billingToPay.getAmount(),
                 billingToPay.getPaymentStatus(),
-                null,
+                userMapper.toDto(billingToPay.getUser()),
                 billingToPay.getReason()
         );
 

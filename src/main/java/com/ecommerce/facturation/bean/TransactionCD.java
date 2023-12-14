@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "TYPE", length = 4)
+@DiscriminatorColumn(name = "TYPE", length = 255)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
