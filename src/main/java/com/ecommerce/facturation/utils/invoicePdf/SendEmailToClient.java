@@ -34,10 +34,8 @@ public class SendEmailToClient {
     @Value("${spring.user.pdf}")
     String resourcePath;
 
-//    @Async
+    //    @Async
     public void send(Invoice invoice) {
-        long startDate = System.currentTimeMillis();
-
         try {
             //            Thread.sleep(10000);
             MimeMessage message = getMimeMessage();
@@ -61,8 +59,6 @@ public class SendEmailToClient {
         } catch (MessagingException e) {
             log.error("Error sending pdf Invoice: " + e.getMessage());
         }
-        long endDate = System.currentTimeMillis();
-        log.info("Total time sendEmail {} {}", invoice.getId(), (endDate - startDate) + "ms");
 
     }
 
@@ -74,7 +70,7 @@ public class SendEmailToClient {
         return "<" + fileName + ">";
     }
 
-    private void removePdfFile(String invoiceNumber) {
+    public void removePdfFile(String invoiceNumber) {
         try {
             Path pdfFilePath = Paths.get("pdf/" + invoiceNumber + ".pdf");
             Files.delete(pdfFilePath);

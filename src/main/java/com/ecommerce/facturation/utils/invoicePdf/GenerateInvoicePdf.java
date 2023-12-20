@@ -33,7 +33,6 @@ public class GenerateInvoicePdf {
     @Value("${spring.user.pdf}")
     String generalePath;
 
-//    @Async
     public void generate(Invoice invoice) throws FileNotFoundException {
         System.out.println("Current Thread in generate method is: " + Thread.currentThread());
         String pdfName = invoice.getInvoiceNumber() + ".pdf";

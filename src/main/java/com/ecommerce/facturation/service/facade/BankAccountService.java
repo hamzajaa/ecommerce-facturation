@@ -1,5 +1,7 @@
 package com.ecommerce.facturation.service.facade;
 
+import com.ecommerce.facturation.Enum.Role;
+import com.ecommerce.facturation.bean.BankAccount;
 import com.ecommerce.facturation.dto.BankAccountDTO;
 import com.ecommerce.facturation.exception.BankAccountNotFoundException;
 
@@ -21,4 +23,6 @@ public interface BankAccountService {
     void setDataProviderToBankAccount(String payload);
 
     BankAccountDTO setDataDeliveryManToBankAccount(String payload);
+    BankAccount findByUserRole(Role role);
+
 }

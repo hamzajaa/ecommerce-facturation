@@ -1,5 +1,6 @@
 package com.ecommerce.facturation.jms;
 
+import com.ecommerce.facturation.exception.BankAccountNotFoundException;
 import com.ecommerce.facturation.service.facade.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
@@ -34,7 +35,7 @@ public class DeliveryMessage {
 
     @Async
     @JmsListener(destination = "CommandeStatusTopic", containerFactory = "jmsListenerTopicContainerFactory", concurrency = "1000")
-    public void receiveMessage(Message<String> orderDto) {
+    public void receiveMessage(Message<String> orderDto) throws BankAccountNotFoundException {
         System.out.println("Current Thread in receiveMessage: " + Thread.currentThread());
         System.out.println("Message reçu du topic : " + orderDto);
         String payload = orderDto.getPayload();

@@ -3,6 +3,7 @@ package com.ecommerce.facturation.ws;
 import com.ecommerce.facturation.bean.Invoice;
 import com.ecommerce.facturation.dto.InvoiceDTO;
 import com.ecommerce.facturation.dto.OrderDto;
+import com.ecommerce.facturation.exception.BankAccountNotFoundException;
 import com.ecommerce.facturation.exception.InvoiceNotFoundException;
 import com.ecommerce.facturation.service.impl.InvoiceServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,12 +39,12 @@ public class InvoiceController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<InvoiceDTO> save(@Valid @RequestBody InvoiceDTO invoiceDTO) {
+    public ResponseEntity<InvoiceDTO> save(@Valid @RequestBody InvoiceDTO invoiceDTO) throws BankAccountNotFoundException {
         return new ResponseEntity<>(invoiceService.save(invoiceDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/")
-    public ResponseEntity<InvoiceDTO> update(@Valid @RequestBody InvoiceDTO invoiceDTO) {
+    public ResponseEntity<InvoiceDTO> update(@Valid @RequestBody InvoiceDTO invoiceDTO) throws BankAccountNotFoundException {
         return ResponseEntity.ok(invoiceService.update(invoiceDTO));
     }
 

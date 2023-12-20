@@ -1,6 +1,8 @@
 package com.ecommerce.facturation.service.facade;
 
 import com.ecommerce.facturation.Enum.Bank;
+import com.ecommerce.facturation.Enum.Role;
+import com.ecommerce.facturation.bean.BankAccountBalance;
 import com.ecommerce.facturation.dto.BankAccountBalanceDTO;
 import com.ecommerce.facturation.exception.BankAccountBalanceNotFoundException;
 import com.ecommerce.facturation.exception.BankAccountNotFoundException;
@@ -15,6 +17,8 @@ public interface BankAccountBalanceService {
     boolean deleteBankAccountBalanceById(Long id) throws BankAccountBalanceNotFoundException;
 
     BankAccountBalanceDTO findByBankAccount_Bank(Bank bank);
+
+    BankAccountBalance findByBankAccount_UserRole(Role role);
 
 
 }

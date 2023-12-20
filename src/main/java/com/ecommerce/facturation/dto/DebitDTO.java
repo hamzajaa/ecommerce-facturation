@@ -13,6 +13,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -23,7 +25,13 @@ public class DebitDTO extends TransactionDTO {
     @Valid
     List<DebitBillingToReceiveDTO> debitBillingToReceiveDTOS;
 
-    public DebitDTO(@NotNull(message = "Full name cannot be null") @DecimalMin(value = "0.0", inclusive = false, message = "Amount must be greater than 0") BigDecimal amount, @Valid BankAccountDTO sender, @Valid BankAccountDTO receiver, PaymentStatus paymentStatus, TransactionalType transactionalType, @Valid InvoiceDTO invoice, List<DebitBillingToReceive> debitBillingToReceiveDTOS) {
+    public DebitDTO(
+            @NotNull(message = "Full name cannot be null") @DecimalMin(value = "0.0", inclusive = false, message = "Amount must be greater than 0") BigDecimal amount,
+            @Valid BankAccountDTO sender,
+            @Valid BankAccountDTO receiver,
+            PaymentStatus paymentStatus,
+            TransactionalType transactionalType,
+            @Valid InvoiceDTO invoice) {
         super(null, amount, sender, receiver, paymentStatus, transactionalType, invoice);
     }
 }

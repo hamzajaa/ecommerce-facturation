@@ -1,6 +1,7 @@
 package com.ecommerce.facturation.service.impl;
 
 import com.ecommerce.facturation.Enum.Bank;
+import com.ecommerce.facturation.Enum.Role;
 import com.ecommerce.facturation.bean.BankAccountBalance;
 import com.ecommerce.facturation.dao.BankAccountBalanceDao;
 import com.ecommerce.facturation.dto.BankAccountBalanceDTO;
@@ -70,5 +71,10 @@ public class BankAccountBalanceServiceImpl implements BankAccountBalanceService 
     public BankAccountBalanceDTO findByBankAccount_Bank(Bank bank) {
         BankAccountBalance foundedBank = bankAccountBalanceDao.findByBankAccount_Bank(bank);
         return bankAccountBalanceMapper.fromBankAccountBalance(foundedBank);
+    }
+
+    @Override
+    public BankAccountBalance findByBankAccount_UserRole(Role role) {
+        return bankAccountBalanceDao.findByBankAccount_UserRole(role);
     }
 }

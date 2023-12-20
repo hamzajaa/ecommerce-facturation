@@ -119,4 +119,9 @@ public class BankAccountServiceImpl implements BankAccountService {
         save(bankAccountDTO);
         return bankAccountDTO;
     }
+
+    @Override
+    public BankAccount findByUserRole(Role role) {
+        return bankAccountDao.findByUserRole(role);
+    }
 }

@@ -43,16 +43,14 @@ public class EcommerceFacturationApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        UserDTO savedUser = null;
-        UserDTO userDTO = new UserDTO(null, "UIR", "uirshop@gmail.com", "Technopolis", "+2120662359876", Role.ADMIN);
-        BankAccountBalanceDTO savedUirBank=null;
-        BankAccountDTO savedBankAccountUir = null;
-        if (userService.findByEmail(userDTO.email()) == null) {
-            savedUser = userService.save(userDTO);
+
+        if (userService.findByEmail("uirshop@gmail.com") == null) {
+            UserDTO userDTO = new UserDTO(null, "UIR", "uirshop@gmail.com", "Technopolis", "+2120662359876", Role.ADMIN);
+            UserDTO savedUser = userService.save(userDTO);
             BankAccountDTO bankAccountDTO = new BankAccountDTO("rib1", Bank.WAFABANK, savedUser);
-            savedBankAccountUir = bankAccountService.save(bankAccountDTO);
+            BankAccountDTO savedBankAccountUir = bankAccountService.save(bankAccountDTO);
             BankAccountBalanceDTO bankAccountBalanceDTO = new BankAccountBalanceDTO(savedBankAccountUir, BigDecimal.ZERO);
-            savedUirBank = bankAccountBalanceService.save(bankAccountBalanceDTO);
+            bankAccountBalanceService.save(bankAccountBalanceDTO);
         }
 
 

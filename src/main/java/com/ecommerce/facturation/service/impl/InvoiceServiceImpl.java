@@ -1,23 +1,24 @@
 package com.ecommerce.facturation.service.impl;
 
-import com.ecommerce.facturation.Enum.InvoiceStatus;
-import com.ecommerce.facturation.Enum.PaymentMethod;
+import com.ecommerce.facturation.Enum.*;
+import com.ecommerce.facturation.bean.BankAccount;
+import com.ecommerce.facturation.bean.BankAccountBalance;
 import com.ecommerce.facturation.bean.Invoice;
 import com.ecommerce.facturation.dao.InvoiceDao;
-import com.ecommerce.facturation.dto.ClientDTO;
-import com.ecommerce.facturation.dto.CommandItemDto;
-import com.ecommerce.facturation.dto.InvoiceDTO;
-import com.ecommerce.facturation.dto.OrderDto;
+import com.ecommerce.facturation.dto.*;
+import com.ecommerce.facturation.exception.BankAccountNotFoundException;
+import com.ecommerce.facturation.mapper.BankAccountBalanceMapper;
+import com.ecommerce.facturation.mapper.BankAccountMapper;
 import com.ecommerce.facturation.mapper.InvoiceMapper;
 import com.ecommerce.facturation.mapper.JsonMapper;
-import com.ecommerce.facturation.service.facade.InvoiceService;
-import com.ecommerce.facturation.service.facade.TransactionService;
+import com.ecommerce.facturation.service.facade.*;
 import com.ecommerce.facturation.utils.invoicePdf.GenerateInvoicePdf;
 import com.ecommerce.facturation.utils.invoicePdf.SendEmailToClient;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -40,6 +41,16 @@ public class InvoiceServiceImpl implements InvoiceService {
     private JsonMapper jsonMapper;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private BankAccountService bankAccountService;
+    @Autowired
+    private BankAccountMapper bankAccountMapper;
+    @Autowired
+    private BankAccountBalanceService bankAccountBalanceService;
+    @Autowired
+    private BankAccountBalanceMapper bankAccountBalanceMapper;
 
     public void setInvoiceMapper(InvoiceMapper invoiceMapper) {
         this.invoiceMapper = invoiceMapper;
@@ -59,29 +70,58 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
 //    @Async
-    public InvoiceDTO save(InvoiceDTO invoiceDTO) {
+    public InvoiceDTO save(InvoiceDTO invoiceDTO) throws BankAccountNotFoundException {
         log.info("Saving a new invoice.");
         Invoice invoice = invoiceMapper.fromInvoiceDto(invoiceDTO);
         Invoice savedInvoice = invoiceDao.save(invoice);
-//        switch (savedInvoice.getPaymentMethod()) {
-//            case ONLINE -> transactionService.saveDebit(new DebitDTO());
-//            case ON_DELIVERY -> transactionService.saveCredit(new CreditDTO());
-//        }
+        if (savedInvoice.getInvoiceStatus().equals(InvoiceStatus.PAID)) {
+            UserDTO client = new UserDTO(null, savedInvoice.getClientName(),
+                    savedInvoice.getClientEmail(),
+                    savedInvoice.getClientAddress(),
+                    savedInvoice.getClientNumberPhone(),
+                    Role.CLIENT);
+            UserDTO savedClient = userService.save(client);
+
+            BankAccountDTO bankAccountDTO = new BankAccountDTO(savedInvoice.getInvoiceNumber(),
+                    Bank.WAFABANK,
+                    savedClient);
+            BankAccountDTO savedSenderBankAccountDto = bankAccountService.save(bankAccountDTO);
+
+//            BankAccount foundedRecievedBankAccount = bankAccountService.findByUserRole(Role.ADMIN);
+//            BankAccountDTO foundedRecievedBankAccountDto = bankAccountMapper.toDto(foundedRecievedBankAccount);
+
+            BankAccountBalance bankAccountBalance = bankAccountBalanceService.findByBankAccount_UserRole(Role.ADMIN);
+            bankAccountBalance.setBalance(bankAccountBalance.getBalance().add(savedInvoice.getTotalPay()));
+            bankAccountBalanceService.update(bankAccountBalanceMapper.fromBankAccountBalance(bankAccountBalance));
+
+            BankAccount bankAccountReceived = bankAccountBalance.getBankAccount();
+            BankAccountDTO bankAccountReceivedDto = bankAccountMapper.toDto(bankAccountReceived);
+
+            DebitDTO debitDTO = new DebitDTO(
+                    savedInvoice.getTotalPay(),
+                    savedSenderBankAccountDto,
+                    bankAccountReceivedDto,
+                    PaymentStatus.Successful,
+                    TransactionalType.Sale,
+                    invoiceMapper.fromInvoice(savedInvoice)
+            );
+            transactionService.saveDebit(debitDTO);
+        }
         try {
             generateInvoicePdf.generate(savedInvoice);
         } catch (FileNotFoundException e) {
             log.error("Error generating PDF for invoice ID: {}", savedInvoice.getId(), e);
             throw new RuntimeException(e);
         }
-        sendEmailToClient.send(invoice);
+//        sendEmailToClient.send(invoice);
+        sendEmailToClient.removePdfFile(savedInvoice.getInvoiceNumber());
         return invoiceMapper.fromInvoice(savedInvoice);
     }
 
-    //    @Async
     @Override
     @Transactional
-    public void setDataToInvoice(String payload) {
-        long startDate = System.currentTimeMillis();
+    @Async
+    public void setDataToInvoice(String payload) throws BankAccountNotFoundException {
         OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
         ClientDTO clientDTO = jsonMapper.convertJsonToObject(orderDto.client(), ClientDTO.class);
         List<CommandItemDto> commandItemDtos = jsonMapper.convertJsonToObjects(orderDto.commandItemDtos(), CommandItemDto.class);
@@ -98,9 +138,6 @@ public class InvoiceServiceImpl implements InvoiceService {
                 clientDTO.phoneNumber(),
                 commandItemDtos);
         save(invoiceDTO);
-        long endDate = System.currentTimeMillis();
-        log.info("Total time {} {}", invoiceDTO.invoiceId(), (endDate - startDate) + "ms");
-//        return CompletableFuture.completedFuture(invoiceDTO);
     }
 
 
@@ -111,7 +148,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     @Transactional
-    public void setDataToInvoiceAndUpdate(String payload) {
+    public void setDataToInvoiceAndUpdate(String payload) throws BankAccountNotFoundException {
         OrderDto orderDto = jsonMapper.convertJsonToObject(payload, OrderDto.class);
         Invoice foundedInvoice = findByOrderId(orderDto.orderId());
         if (orderDto.paymentStatus().equals("PAYE")) {
@@ -128,9 +165,44 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     @Transactional
-    public InvoiceDTO update(InvoiceDTO invoiceDTO) {
+    public InvoiceDTO update(InvoiceDTO invoiceDTO) throws BankAccountNotFoundException {
         Invoice invoice = invoiceMapper.fromInvoiceDto(invoiceDTO);
         Invoice updatedInvoice = invoiceDao.save(invoice);
+
+        if (updatedInvoice.getInvoiceStatus().equals(InvoiceStatus.PAID)) {
+            UserDTO client = new UserDTO(null, updatedInvoice.getClientName(),
+                    updatedInvoice.getClientEmail(),
+                    updatedInvoice.getClientAddress(),
+                    updatedInvoice.getClientNumberPhone(),
+                    Role.CLIENT);
+            UserDTO savedClient = userService.save(client);
+
+            BankAccountDTO bankAccountDTO = new BankAccountDTO(updatedInvoice.getInvoiceNumber(),
+                    Bank.WAFABANK,
+                    savedClient);
+            BankAccountDTO savedSenderBankAccountDto = bankAccountService.save(bankAccountDTO);
+
+//            BankAccount foundedRecievedBankAccount = bankAccountService.findByUserRole(Role.ADMIN);
+//            BankAccountDTO foundedRecievedBankAccountDto = bankAccountMapper.toDto(foundedRecievedBankAccount);
+
+            BankAccountBalance bankAccountBalance = bankAccountBalanceService.findByBankAccount_UserRole(Role.ADMIN);
+            bankAccountBalance.setBalance(bankAccountBalance.getBalance().add(updatedInvoice.getTotalPay()));
+            bankAccountBalanceService.update(bankAccountBalanceMapper.fromBankAccountBalance(bankAccountBalance));
+
+            BankAccount bankAccountReceived = bankAccountBalance.getBankAccount();
+            BankAccountDTO bankAccountReceivedDto = bankAccountMapper.toDto(bankAccountReceived);
+
+            DebitDTO debitDTO = new DebitDTO(
+                    updatedInvoice.getTotalPay(),
+                    savedSenderBankAccountDto,
+                    bankAccountReceivedDto,
+                    PaymentStatus.Successful,
+                    TransactionalType.Sale,
+                    invoiceMapper.fromInvoice(updatedInvoice)
+            );
+            transactionService.saveDebit(debitDTO);
+        }
+
         try {
             generateInvoicePdf.generateUpdate(updatedInvoice);
             log.info("PDF Invoice generate successfully. ID {}", updatedInvoice.getId());
@@ -138,7 +210,8 @@ public class InvoiceServiceImpl implements InvoiceService {
             log.error("Error generating PDF for invoice ID: {}", updatedInvoice.getId(), e);
             throw new RuntimeException(e);
         }
-        sendEmailToClient.send(invoice);
+//        sendEmailToClient.send(invoice);
+        sendEmailToClient.removePdfFile(updatedInvoice.getInvoiceNumber());
         return invoiceMapper.fromInvoice(updatedInvoice);
     }
 

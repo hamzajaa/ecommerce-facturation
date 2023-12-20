@@ -15,8 +15,8 @@ public class AsyncConfig {
     @Bean(name = "taskExecutor")
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(1000); // initialize 10 thread
-        executor.setMaxPoolSize(1000);
+        executor.setCorePoolSize(8); // initialize 10 thread
+        executor.setMaxPoolSize(10);
         executor.setQueueCapacity(100); // the maximum number of task can be hold in the Q if the Q is full and additional task are submitted
         executor.setThreadNamePrefix("invoiceThread-");
         executor.initialize();

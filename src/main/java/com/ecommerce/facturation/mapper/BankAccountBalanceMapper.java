@@ -13,12 +13,14 @@ public class BankAccountBalanceMapper {
 
     public BankAccountBalance fromBankAccountBalanceDTO(BankAccountBalanceDTO bankAccountBalanceDTO) {
         BankAccountBalance bankAccountBalance = new BankAccountBalance();
+        bankAccountBalance.setId(bankAccountBalanceDTO.id());
         bankAccountBalance.setBalance(bankAccountBalanceDTO.balanceDTO());
         bankAccountBalance.setBankAccount(bankAccountMapper.toEntity(bankAccountBalanceDTO.bankAccountDTO()));
         return bankAccountBalance;
     }
     public BankAccountBalanceDTO fromBankAccountBalance(BankAccountBalance bankAccountBalance) {
         BankAccountBalanceDTO bankAccountBalanceDTO = new BankAccountBalanceDTO(
+                bankAccountBalance.getId(),
                 bankAccountMapper.toDto(bankAccountBalance.getBankAccount()),
                 bankAccountBalance.getBalance()
         );
